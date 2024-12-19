@@ -37,6 +37,7 @@ export async function GET(req: Request) {
             steps: true,
           },
         },
+        map: true,
         createdBy: true,
         comments: {
           include: {

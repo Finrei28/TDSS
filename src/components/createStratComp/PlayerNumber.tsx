@@ -1,9 +1,7 @@
 "use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import toast from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -14,7 +12,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { PlayerSteps } from "../types"
+import { StrategyType } from "../Types"
+import { forwardRef, useImperativeHandle } from "react"
+import { StratRef } from "../dashboard/Props"
 
 const FormSchema = z.object({
   PlayerNum: z.enum(["1", "2", "3", "4"], {
@@ -22,94 +22,113 @@ const FormSchema = z.object({
   }),
 })
 
-type playersProps = {
-  setStrat: React.Dispatch<
-    React.SetStateAction<{
-      name: string
-      gamemode: string
-      difficulty: string
-      description: string
-      map: string
-      numOfPlayers: string
-      inGameGamemode: string
-      players: PlayerSteps[]
-    }>
-  >
-  gamemode: string | null
-  numOfPlayers: string
+type numOfPlayerProps = {
+  setStrat: React.Dispatch<React.SetStateAction<StrategyType>>
+  gamemode: string
+  numOfPlayer: string
+  mode?: string
 }
 
-export default function Players({
-  setStrat,
-  gamemode,
-  numOfPlayers,
-}: playersProps) {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      PlayerNum: numOfPlayers
-        ? (numOfPlayers as "1" | "2" | "3" | "4")
-        : undefined, // Set default value based on URL or gamemode
-    },
-  })
+const numOfPlayer = forwardRef<StratRef, numOfPlayerProps>(
+  ({ setStrat, gamemode, numOfPlayer, mode }: numOfPlayerProps, ref) => {
+    const form = useForm<z.infer<typeof FormSchema>>({
+      resolver: zodResolver(FormSchema),
+      defaultValues: {
+        PlayerNum: numOfPlayer
+          ? (numOfPlayer as "1" | "2" | "3" | "4")
+          : undefined,
+      },
+    })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    setStrat((prev) => ({
-      ...prev,
-      numOfPlayers: data.PlayerNum,
+    useImperativeHandle(ref, () => ({
+      submit: async () => {
+        let formData: string | undefined = ""
+
+        // Use a Promise to wait for form.handleSubmit to resolve
+        await new Promise<void>((resolve) => {
+          form.handleSubmit((data) => {
+            formData = data.PlayerNum
+            onSubmit(data)
+            resolve() // Resolve the promise
+          })()
+        })
+
+        return {
+          numOfPlayer:
+            formData === "1"
+              ? "ONE"
+              : formData === "2"
+              ? "TWO"
+              : formData === "3"
+              ? "THREE"
+              : "FOUR.",
+        }
+      },
     }))
-  }
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <FormField
-          control={form.control}
-          name="PlayerNum"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>
-                How many players are required for this strat?
-              </FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  value={field.value} // Use the form's current value
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="1" />
-                    </FormControl>
-                    <FormLabel className="font-normal">1</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="2" />
-                    </FormControl>
-                    <FormLabel className="font-normal">2</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="3" />
-                    </FormControl>
-                    <FormLabel className="font-normal">3</FormLabel>
-                  </FormItem>
-                  {gamemode !== "hardcore" && (
+
+    function onSubmit(data: z.infer<typeof FormSchema>) {
+      setStrat((prev) => ({
+        ...prev,
+        numOfPlayer: data.PlayerNum,
+      }))
+    }
+    return (
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-2/3 space-y-6"
+        >
+          <FormField
+            control={form.control}
+            name="PlayerNum"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>
+                  How many players are required for this strat?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    value={field.value} // Use the form's current value
+                    className="flex flex-col space-y-1"
+                  >
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
-                        <RadioGroupItem value="4" />
+                        <RadioGroupItem value="1" />
                       </FormControl>
-                      <FormLabel className="font-normal">4</FormLabel>
+                      <FormLabel className="font-normal">1</FormLabel>
                     </FormItem>
-                  )}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Next</Button>
-      </form>
-    </Form>
-  )
-}
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="2" />
+                      </FormControl>
+                      <FormLabel className="font-normal">2</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="3" />
+                      </FormControl>
+                      <FormLabel className="font-normal">3</FormLabel>
+                    </FormItem>
+                    {gamemode.toLowerCase() !== "hardcore" && (
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="4" />
+                        </FormControl>
+                        <FormLabel className="font-normal">4</FormLabel>
+                      </FormItem>
+                    )}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {mode !== "edit" && <Button type="submit">Next</Button>}
+        </form>
+      </Form>
+    )
+  }
+)
+
+export default numOfPlayer

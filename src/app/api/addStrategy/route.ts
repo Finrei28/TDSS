@@ -2,23 +2,22 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma" // Assuming you have a Prisma setup in this path
 import { Difficulty, Gamemode, StratDifficulty } from "@prisma/client"
-import { PlayerData, PlayerSteps } from "@/components/types"
+import { PlayerData, PlayerSteps } from "@/components/Types"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { authOptions } from "../auth/[...nextauth]/options"
 import { getServerSession } from "next-auth"
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions)
-  if (!session) {
+  if (!session?.user.id) {
     return NextResponse.json({ error: "Unauthenticated" }, { status: 401 })
   }
 
   try {
     const strat = await request.json() // Get the data from the client request
-
     // 1. Find the map by name
     const map = await prisma.map.findUnique({
-      where: { name: strat.map },
+      where: { name: strat.map.name },
     })
 
     if (!map) {
@@ -52,8 +51,8 @@ export async function POST(request: Request) {
             towers: player.towers,
             steps: {
               create: player.steps.map((step: PlayerData) => ({
-                waveStart: parseInt(step.waveStart),
-                waveEnd: parseInt(step.waveEnd),
+                waveStart: step.waveStart,
+                waveEnd: step.waveEnd,
                 description: step.description,
               })),
             },

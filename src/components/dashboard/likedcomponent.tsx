@@ -4,13 +4,16 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { formatDistanceToNow } from "date-fns"
-import { strategyLikes, StrategyType } from "../types"
-import { generateSlug } from "../utils"
-import Loader from "../loader"
+import { strategyLikes } from "../Types"
+import { generateSlug } from "../Utils"
+import { ErrorMessageProps } from "../ClientUtils"
+import Loader from "../Loader"
+import { ErrorMessage } from "../ui/MessageBox"
 
 const LikedStrategies = () => {
   const [likedStrategies, setLikedStrategies] = useState<strategyLikes[]>([])
   const [loading, setLoading] = useState(true)
+  const { error, setError, closeErrorMessage } = ErrorMessageProps()
 
   // Function to fetch liked strategies from the API
   const fetchLikedStrategies = async () => {
@@ -18,18 +21,17 @@ const LikedStrategies = () => {
 
     if (response.ok) {
       const data = await response.json()
-      console.log(data.user.strategyLikes)
-
       const sortedStrategies = data.user.strategyLikes.sort(
         (a: strategyLikes, b: strategyLikes) =>
           new Date(b.likedAt).getTime() - new Date(a.likedAt).getTime()
       )
 
-      console.log(sortedStrategies) // Check if sorted correctly
       setLikedStrategies(sortedStrategies)
       setLoading(false)
     } else {
-      console.error("Failed to fetch liked strategies")
+      setError(
+        "Could not fetch your liked strategies, please try again later. If this persists please contact the admin."
+      )
     }
   }
 
@@ -46,6 +48,14 @@ const LikedStrategies = () => {
         </div>
       ) : (
         <div>
+          <div className="fixed bottom-4 ml-4 p-4 z-110">
+            {error && (
+              <ErrorMessage
+                message={error}
+                closeErrorMessage={closeErrorMessage}
+              />
+            )}
+          </div>
           {likedStrategies?.length > 0 ? (
             <div className="grid gap-6 w-full 2xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 lg:w-4/6 p-4">
               {likedStrategies.map((strategy) => (
@@ -90,15 +100,17 @@ const LikedStrategies = () => {
                       </p>
                       <p>Difficulty: {strategy.strategy.difficulty}</p>
                       <p>Description: {strategy.strategy.description}</p>
-                      <p>
-                        Created:{" "}
-                        {formatDistanceToNow(
-                          new Date(strategy.strategy.createdAt),
-                          {
-                            addSuffix: true,
-                          }
-                        )}
-                      </p>
+                      {strategy.strategy.createdAt && (
+                        <p>
+                          Created:{" "}
+                          {formatDistanceToNow(
+                            new Date(strategy.strategy.createdAt),
+                            {
+                              addSuffix: true,
+                            }
+                          )}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="m-5">
@@ -117,16 +129,16 @@ const LikedStrategies = () => {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col justify-center items-center min-h-screen -mt-40">
+            <div className="flex flex-col justify-center items-center min-h-screen -mt-40 mr-5 ml-2">
               <div
                 className="text-gray-600 px-4 py-3 rounded relative"
                 role="alert"
               >
-                <strong className="font-bold">
+                <strong className="font-bold text-center">
                   You haven't liked any strats yet.
                 </strong>
               </div>
-              <p className="mt-4 text-gray-600">
+              <p className="mt-4 text-gray-600 text-center">
                 <Link href="/" className="text-primary">
                   Click here {""}
                 </Link>

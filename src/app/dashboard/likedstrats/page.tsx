@@ -3,12 +3,12 @@ import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { PrismaClient } from "@prisma/client"
-import { StrategyType, User } from "@/components/types"
+import { StrategyType, User } from "@/components/Types"
 import { formatDistanceToNow } from "date-fns"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { generateSlug } from "@/components/utils"
+import { generateSlug } from "@/components/Utils"
 import LikedStrategies from "@/components/dashboard/likedcomponent"
 
 const prisma = new PrismaClient()
@@ -27,7 +27,7 @@ const likedStrats = async () => {
     <div className="min-h-[calc(100vh-3.5rem)] flex flex-row">
       <div className="flex flex-1">
         <DashboardSidebar />
-        <main className="flex-1 p-5 bg-gray-100">
+        <main className="flex-1 p-5 bg-gray-100 sm:ml-64">
           <h2 className="text-xl md:text-3xl font-semibold text-gray-700 mb-6">
             Liked Strats
           </h2>

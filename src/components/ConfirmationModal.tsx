@@ -3,25 +3,14 @@ import Modal from "@/components/ui/modal"
 import { signIn } from "next-auth/react"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import { PlayerSteps } from "./types"
+import { PlayerSteps, StrategyType } from "./Types"
 import { Button, buttonVariants } from "./ui/button"
-
-type strategyType = {
-  name: string
-  gamemode: string
-  difficulty: string
-  description: string
-  map: string
-  numOfPlayers: string
-  inGameGamemode: string
-  players: PlayerSteps[]
-}
 
 type ConfirmationModalProps = {
   isOpen: boolean
   onClose: () => void
   handleSubmit?: () => void // Add your own submit logic here
-  strat?: strategyType
+  strat?: StrategyType
 }
 
 const ConfirmationModal = ({
@@ -74,9 +63,10 @@ const ConfirmationModal = ({
               </h1>
               <h2 className="flex justify-center text-base mt-5 mb-5 text-center">
                 You're about to create a strategy {strat.name} for{" "}
-                {strat.inGameGamemode.toUpperCase()} {strat.map.toUpperCase()}{" "}
-                in {strat.gamemode.toUpperCase()} mode that requires{" "}
-                {strat.numOfPlayers} player(s)
+                {strat.inGameGamemode ? strat.inGameGamemode.toUpperCase() : ""}{" "}
+                {strat.map.name.toUpperCase()} in {strat.gamemode.toUpperCase()}{" "}
+                mode that requires {strat.numOfPlayer}{" "}
+                {strat.numOfPlayer === "1" ? "player" : "players"}
               </h2>
               <div className="flex justify-center gap-3">
                 <Button type="button" onClick={handleSubmit}>

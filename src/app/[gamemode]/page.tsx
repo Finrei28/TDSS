@@ -1,10 +1,13 @@
 "use client"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
 import Link from "next/link"
-import { notFound, useParams, useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
-import Loader from "@/components/loader"
+import Loader from "@/components/Loader"
 import Image from "next/image"
+import { ErrorMessage } from "@/components/ui/MessageBox"
+import { ErrorMessageProps } from "@/components/ClientUtils"
+import { ArrowBigLeft } from "lucide-react"
 
 type MapType = {
   name: string
@@ -18,6 +21,7 @@ const page = () => {
   const { gamemode } = useParams()
   const [loading, setLoading] = useState(true)
   const gamemodeStr = Array.isArray(gamemode) ? gamemode[0] : gamemode
+  const { error, setError, closeErrorMessage } = ErrorMessageProps()
   const router = useRouter()
   useEffect(() => {
     if (
@@ -38,7 +42,9 @@ const page = () => {
         setMaps(data)
         setLoading(false)
       } catch (error) {
-        console.error("Error fetching maps:", error)
+        setError(
+          "Could not fetch maps, please try again later. If this error persists please contact the admin."
+        )
       }
     }
 
@@ -51,21 +57,40 @@ const page = () => {
       .replace(/[^\w-]+/g, "") // Remove all non-word characters
   }
 
+  const goBackHandler = () => {
+    router.push(`/`)
+  }
+
   return (
-    <div className="bg-slate-50 flex justify-center items-center h-screen w-full  -mt-14 ">
+    <div className="bg-slate-50 min-h-[calc(100vh-3.5rem)]">
       <section>
-        <MaxWidthWapper>
-          {loading ? (
+        {loading ? (
+          <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
             <Loader />
-          ) : maps.length > 0 ? (
-            <div>
-              <div className="flex flex-col items-center justify-center mb-10">
-                <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
-                  Pick a map!
-                </h1>
-              </div>
+          </div>
+        ) : maps.length > 0 ? (
+          <div>
+            <div className="fixed bottom-4 ml-4 p-4 z-110">
+              {error && (
+                <ErrorMessage
+                  message={error}
+                  closeErrorMessage={closeErrorMessage}
+                />
+              )}
+            </div>
+            <div className="relative flex justify-center pt-10 pb-10">
+              <ArrowBigLeft
+                className="hidden sm:block fixed left-10 text-primary fill-white cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 hover:fill-primary"
+                size={"2.5rem"}
+                onClick={goBackHandler}
+              />
+              <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
+                Pick a map!
+              </h1>
+            </div>
+            <MaxWidthWapper className=" lg:max-w-2xl md:max-w-xl sm:max-w-md max-w-xs">
               <div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pb-20">
                   {maps.map((map) => (
                     <Link
                       key={map.name}
@@ -90,15 +115,17 @@ const page = () => {
                   ))}
                 </div>
               </div>
-            </div>
-          ) : (
+            </MaxWidthWapper>
+          </div>
+        ) : (
+          <MaxWidthWapper>
             <div className="flex flex-col items-center justify-center mb-10">
               <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
                 No maps found
               </h1>
             </div>
-          )}
-        </MaxWidthWapper>
+          </MaxWidthWapper>
+        )}
       </section>
     </div>
   )

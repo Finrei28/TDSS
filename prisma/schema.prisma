@@ -4,31 +4,40 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 model User {
-  id              String         @id @default(cuid())
-  username        String
-  email           String         @unique
-  password        String
-  role            Roles          @default(USER)
-  emailVerified   DateTime?
-  image           String?
-  accounts        Account[]
-  sessions        Session[]
-  Authenticator   Authenticator[]
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  strategies      Strategy[]     @relation("UserStrategies")
-  strategyLikes   UserStrategyLike[]
-  comments        Comment[]
+  id                     String         @id @default(cuid())
+  name                   String?
+  username               String?
+  email                  String         @unique
+  password               String?
+  resetPasswordToken      String? 
+  resetPasswordTokenExpiresAt DateTime?
+  role                   Roles          @default(USER)
+  emailVerified          DateTime?
+  image                  String?
+  accounts               Account[]
+  sessions               Session[]
+  Authenticator          Authenticator[]
+  requires2FAExpiresAt   DateTime?
+  otp                    String? // One time password
+  otpExpiresAt           DateTime? // One time password expiration date
+  verificationToken      String?
+  verificationTokenExpiresAt  DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  strategies             Strategy[]     @relation("UserStrategies")
+  strategyLikes          UserStrategyLike[]
+  comments               Comment[]
 }
 
 model Account {
@@ -178,6 +187,27 @@ enum NumOfPlayer {
   FOUR
 }
 
+
+
+model Player {
+  id         Int          @id @default(autoincrement())
+  playerNo   Int // Unique player number (1, 2, 3, 4)
+  towers     String[] // List of tower names for the player
+  consumables String[]
+  steps      PlayerData[] // Relationship with Step model
+  strategyId Int // Foreign key to Strategy
+  strategy   Strategy     @relation(fields: [strategyId], references: [id], onDelete: Cascade) // Relation field
+}
+
+model PlayerData {
+  id          Int    @id @default(autoincrement())
+  waveStart   String
+  waveEnd     String
+  description String
+  playerId    Int // Foreign key to Player
+  player      Player @relation(fields: [playerId], references: [id], onDelete: Cascade) // Relation field
+}
+
 enum Tower {
   SCOUT
   SNIPER
@@ -226,23 +256,4 @@ enum Tower {
   CYROMANCER
   WAR_MACHINE
   MECHA_BASE
-}
-
-model Player {
-  id         Int          @id @default(autoincrement())
-  playerNo   Int // Unique player number (1, 2, 3, 4)
-  towers     String[] // List of tower names for the player
-  consumables String[]
-  steps      PlayerData[] // Relationship with Step model
-  strategyId Int // Foreign key to Strategy
-  strategy   Strategy     @relation(fields: [strategyId], references: [id]) // Relation field
-}
-
-model PlayerData {
-  id          Int    @id @default(autoincrement())
-  waveStart   String
-  waveEnd     String
-  description String
-  playerId    Int // Foreign key to Player
-  player      Player @relation(fields: [playerId], references: [id]) // Relation field
 }

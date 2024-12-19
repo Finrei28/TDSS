@@ -1,6 +1,6 @@
 "use client"
 
-import React, { ChangeEvent, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Accordion,
   AccordionContent,
@@ -61,21 +61,23 @@ const ConfirmationModal = dynamic(
     ssr: false, // Disables server-side rendering for this component
   }
 )
-import FormField from "@/components/FormField"
-import { PlayerData, PlayerSteps } from "@/components/types"
+
+import { PlayerSteps, StrategyType } from "@/components/Types"
 import StratName from "@/components/createStratComp/StratName"
 import { Button } from "@/components/ui/button"
-import { useSession, signIn } from "next-auth/react"
-import SuccessMessage from "@/components/ui/successfulMessage"
+import { useSession } from "next-auth/react"
+import { ErrorMessage, SuccessMessage } from "@/components/ui/MessageBox"
+import { initialPlayerSteps, maxWaves } from "@/components/Utils"
+import { ErrorMessageProps } from "@/components/ClientUtils"
 
 const createstrategy = () => {
-  const [strat, setStrat] = useState({
+  const [strat, setStrat] = useState<StrategyType>({
     name: "",
     gamemode: "",
     difficulty: "",
     description: "",
-    map: "",
-    numOfPlayers: "",
+    map: { name: "" },
+    numOfPlayer: "",
     inGameGamemode: "",
     players: [] as PlayerSteps[],
   })
@@ -84,12 +86,7 @@ const createstrategy = () => {
   const [descriptionCheck, setDescriptionCheck] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [success, setSuccess] = useState(false)
-
-  const initialPlayerSteps: PlayerData = {
-    waveStart: "",
-    waveEnd: "",
-    description: "",
-  }
+  const { error, setError, closeErrorMessage } = ErrorMessageProps()
 
   const [nextCheck, setNextCheck] = useState({
     playerOne: false,
@@ -98,7 +95,7 @@ const createstrategy = () => {
     playerFour: false,
   })
 
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
 
   useEffect(() => {
     const storedStrat = sessionStorage.getItem("stratData")
@@ -114,19 +111,8 @@ const createstrategy = () => {
     }
   }, [])
 
-  const maxWaves =
-    strat.gamemode === "hardcore"
-      ? 50
-      : strat.gamemode === "special"
-      ? 40
-      : strat.gamemode === "normal" && strat.inGameGamemode === "easy"
-      ? 20
-      : strat.inGameGamemode === "intermediate"
-      ? 30
-      : 40
-
   const getMaxPlayers = () => {
-    switch (strat.numOfPlayers) {
+    switch (strat.numOfPlayer) {
       case "1":
         return "playerOne"
       case "2":
@@ -136,7 +122,7 @@ const createstrategy = () => {
       case "4":
         return "playerFour"
       default:
-        return undefined
+        return "playerOne"
     }
   }
   const MaxPlayerKey = getMaxPlayers()
@@ -176,7 +162,8 @@ const createstrategy = () => {
       })
 
       if (!response.ok) {
-        throw new Error("Failed to create strategy")
+        const errorData = await response.json()
+        setError(errorData.message)
       }
       sessionStorage.removeItem("stratData")
       setSuccess(true)
@@ -185,27 +172,69 @@ const createstrategy = () => {
         gamemode: "",
         difficulty: "",
         description: "",
-        map: "",
-        numOfPlayers: "",
+        map: { name: "" },
+        numOfPlayer: "",
         inGameGamemode: "",
         players: [] as PlayerSteps[],
       })
+      setNextCheck({
+        playerOne: false,
+        playerTwo: false,
+        playerThree: false,
+        playerFour: false,
+      })
+      setNameCheck(false)
+      closeModal()
       setTimeout(() => {
         setSuccess(false)
       }, 3000)
       const data = await response.json()
       console.log("Strategy created:", data)
     } catch (error) {
-      console.error("Error creating strategy:", error)
+      setError("Failed to create strategy, contact the admin if this persists")
     }
   }
 
+  const checkStepsCompleted = (player: string, maxNumber: number) => {
+    if (player) {
+      let completed = nextCheck[player as keyof typeof nextCheck]
+      if (!completed) {
+        return false
+      }
+      for (let i = 1; i < maxNumber; i++) {
+        const playerKey = getPlayers(i)
+        if (playerKey && !nextCheck[playerKey]) {
+          completed = false
+          break
+        } else {
+          completed = true
+        }
+      }
+      return completed
+    } else {
+      return false
+    }
+  }
+
+  const stepsCompleted = checkStepsCompleted(
+    MaxPlayerKey,
+    parseInt(strat.numOfPlayer)
+  )
+  console.log(strat)
   return (
     <div className="bg-slate-50 min-h-screen -mt-14">
       <section>
         <div className="fixed bottom-4 ml-4 p-4 z-110">
           {success && (
             <SuccessMessage message="You have successfully shared your strategy with the community!" />
+          )}
+        </div>
+        <div className="fixed bottom-4 ml-4 p-4 z-110">
+          {error && (
+            <ErrorMessage
+              message={error}
+              closeErrorMessage={closeErrorMessage}
+            />
           )}
         </div>
 
@@ -269,7 +298,7 @@ const createstrategy = () => {
                   <div>
                     <span>In Game Difficulty:</span>
                     <span className="text-slate-50 ml-2">
-                      {strat.inGameGamemode.toUpperCase()}
+                      {strat.inGameGamemode?.toUpperCase()}
                     </span>
                   </div>
                 </AccordionTrigger>
@@ -289,20 +318,11 @@ const createstrategy = () => {
                   <div>
                     <span>Map:</span>
                     <span className="text-slate-50 ml-2">
-                      {strat.map.toUpperCase()}
+                      {strat.map.name.toUpperCase()}
                     </span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="relative mx-auto text-center -mt-10 max-w-96">
-                    <FormField
-                      placeholder="Search for a map..."
-                      type="text"
-                      name="search-map"
-                      // value={search}
-                      // handlechange={handleSearchChange}
-                    />
-                  </div>
                   <Map
                     setStrat={setStrat}
                     gamemode={strat.gamemode}
@@ -311,13 +331,13 @@ const createstrategy = () => {
                 </AccordionContent>
               </AccordionItem>
             )}
-            {strat.map && (
+            {strat.map.name && (
               <AccordionItem value="item-5">
                 <AccordionTrigger>
                   <div>
                     <span>Players:</span>
                     <span className="text-slate-50 ml-2">
-                      {strat.numOfPlayers.toUpperCase()}
+                      {strat.numOfPlayer.toUpperCase()}
                     </span>
                   </div>
                 </AccordionTrigger>
@@ -325,20 +345,20 @@ const createstrategy = () => {
                   <PlayerNumber
                     setStrat={setStrat}
                     gamemode={strat.gamemode}
-                    numOfPlayers={strat.numOfPlayers}
+                    numOfPlayer={strat.numOfPlayer}
                   />
                 </AccordionContent>
               </AccordionItem>
             )}
-            {strat.numOfPlayers &&
-              Array.from({ length: parseInt(strat.numOfPlayers) }, (_, i) => {
+            {strat.numOfPlayer &&
+              Array.from({ length: parseInt(strat.numOfPlayer) }, (_, i) => {
                 // Create an array or mapping of player data
 
                 // Access the correct player based on index i
-                const currentPlayer = strat.players[i]
                 const player = getPlayers(i)
                 return (
-                  (i === 0 || (player && nextCheck[player] === true)) && (
+                  (i === 0 ||
+                    (player && checkStepsCompleted(player, i) === true)) && (
                     <AccordionItem
                       key={`player-${i + 1}`}
                       value={`player-${i + 1}`}
@@ -358,12 +378,20 @@ const createstrategy = () => {
                         {/* Custom content for each player */}
                         <PlayerStep
                           setStrat={setStrat}
-                          strat={strat}
+                          playerData={
+                            strat.players
+                              ? strat.players[i]
+                              : ({} as PlayerSteps)
+                          }
                           player={i}
                           setNextCheck={setNextCheck}
                           nextCheck={nextCheck}
                           initialPlayerSteps={initialPlayerSteps}
-                          maxWaves={maxWaves}
+                          maxWaves={maxWaves(
+                            strat.gamemode.toLowerCase(),
+                            strat.inGameGamemode?.toLowerCase() ?? ""
+                          )}
+                          gamemode={strat.gamemode}
                         />
                       </AccordionContent>
                     </AccordionItem>
@@ -371,7 +399,7 @@ const createstrategy = () => {
                 )
               })}
 
-            {MaxPlayerKey && nextCheck[MaxPlayerKey] === true && (
+            {MaxPlayerKey && stepsCompleted === true && (
               <AccordionItem value="item-6">
                 <AccordionTrigger>
                   <div>
@@ -389,30 +417,26 @@ const createstrategy = () => {
                 </AccordionContent>
               </AccordionItem>
             )}
-            {strat.difficulty &&
-              MaxPlayerKey &&
-              nextCheck[MaxPlayerKey] === true && (
-                <AccordionItem value="item-7">
-                  <AccordionTrigger>Strategy Description:</AccordionTrigger>
+            {strat.difficulty && stepsCompleted === true && (
+              <AccordionItem value="item-7">
+                <AccordionTrigger>Strategy Description:</AccordionTrigger>
 
-                  <AccordionContent>
-                    <Description
-                      setStrat={setStrat}
-                      stratDescription={strat.description}
-                      setDescriptionCheck={setDescriptionCheck}
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                <AccordionContent>
+                  <Description
+                    setStrat={setStrat}
+                    stratDescription={strat.description}
+                    setDescriptionCheck={setDescriptionCheck}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            )}
           </Accordion>
 
-          {descriptionCheck &&
-            MaxPlayerKey &&
-            nextCheck[MaxPlayerKey] === true && (
-              <div className="flex justify-center mt-12">
-                <Button onClick={handleTrySubmit}>Confirm and Post</Button>
-              </div>
-            )}
+          {descriptionCheck && stepsCompleted === true && (
+            <div className="flex justify-center mt-12">
+              <Button onClick={handleTrySubmit}>Confirm and Post</Button>
+            </div>
+          )}
         </MaxWidthWapper>
         {!session && (
           <ConfirmationModal isOpen={isModalOpen} onClose={closeModal} />

@@ -1,35 +1,22 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { PlayerSteps } from "../types"
-
-type MapType = {
-  name: string
-  image: string
-  difficulty: string
-  gamemodes: string[]
-}
+import { Map, PlayerSteps, StrategyType } from "../Types"
+import { ErrorMessage } from "../ui/MessageBox"
+import { ErrorMessageProps } from "../ClientUtils"
 
 type setMapProps = {
-  setStrat: React.Dispatch<
-    React.SetStateAction<{
-      name: string
-      gamemode: string
-      difficulty: string
-      description: string
-      map: string
-      numOfPlayers: string
-      inGameGamemode: string
-      players: PlayerSteps[]
-    }>
-  >
+  setStrat: React.Dispatch<React.SetStateAction<StrategyType>>
   gamemode: string | null
-  map: string | null
+  map: Map
 }
 
-const Map = ({ setStrat, gamemode, map }: setMapProps) => {
-  const [maps, setMaps] = useState<MapType[]>([])
+const StratMap = ({ setStrat, gamemode, map }: setMapProps) => {
+  const [maps, setMaps] = useState<Map[]>([])
   const [selectedMap, setSelectedMap] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filteredMaps, setFilteredMaps] = useState<Map[]>([])
+  const { error, setError, closeErrorMessage } = ErrorMessageProps()
 
   useEffect(() => {
     const fetchMaps = async () => {
@@ -42,31 +29,55 @@ const Map = ({ setStrat, gamemode, map }: setMapProps) => {
 
         const response = await fetch(url.toString()) // Make the request
         const data = await response.json()
-        setMaps(data) // Update state with fetched maps
+        setMaps(data)
+        setFilteredMaps(data)
         if (map) {
-          setSelectedMap(map)
+          setSelectedMap(map.name)
         }
       } catch (error) {
-        console.error("Error fetching maps:", error)
+        setError(
+          "Could not load the maps, please try reloading the page. If the error persists, please contact the admin."
+        )
       }
     }
 
     fetchMaps()
   }, [gamemode]) // Run the effect when gamemode changes
 
-  const handleMapClick = (map: string) => {
-    setSelectedMap(map)
+  useEffect(() => {
+    const query = searchQuery.toLowerCase()
+    setFilteredMaps(
+      maps.filter((map) => map.name.toLowerCase().includes(query)) // Filter maps by name
+    )
+  }, [searchQuery, maps])
+
+  const handleMapClick = (mapName: string) => {
+    setSelectedMap(mapName)
     setStrat((prev) => ({
       ...prev,
-      numOfPlayers: "",
-      map: map,
+      numOfPlayer: "",
+      map: { name: mapName },
     }))
   }
 
   return (
     <div>
+      <div className="fixed bottom-4 ml-4 p-4 z-110">
+        {error && (
+          <ErrorMessage message={error} closeErrorMessage={closeErrorMessage} />
+        )}
+      </div>
+      <div className="mb-4 flex justify-center">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search maps..."
+          className="w-1/3 px-4 py-3 border rounded-xl "
+        />
+      </div>
       <div className="grid md:grid-cols-4 sm:grid-cols-3 gap-4 mt-5 justify-center md:justify-start">
-        {maps.map((map) => (
+        {filteredMaps.map((map) => (
           <button
             key={map.name}
             onClick={() => handleMapClick(map.name)}
@@ -83,4 +94,4 @@ const Map = ({ setStrat, gamemode, map }: setMapProps) => {
   )
 }
 
-export default Map
+export default StratMap

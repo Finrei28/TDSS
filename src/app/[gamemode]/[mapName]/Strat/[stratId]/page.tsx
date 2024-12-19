@@ -1,22 +1,17 @@
 "use client"
 import { useEffect, useState } from "react"
-import { notFound, useParams, useRouter } from "next/navigation" // Get the dynamic route parameter
-import {
-  PlayerSteps,
-  strategyLikes,
-  StrategyType,
-  User,
-} from "@/components/types"
-import Loader from "@/components/loader"
+import { useParams, useRouter } from "next/navigation" // Get the dynamic route parameter
+import { PlayerSteps, strategyLikes, StrategyType } from "@/components/Types"
+import Loader from "@/components/Loader"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
-import { Heart, HeartOff } from "lucide-react"
+import { ArrowBigLeft, Heart } from "lucide-react"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-
+import Image from "next/image"
 import React from "react"
 const PlayerStepData = dynamic(
   () => import("@/components/strategyData/PlayerStepData"),
@@ -27,9 +22,11 @@ const PlayerStepData = dynamic(
 )
 import { formatDistanceToNow } from "date-fns"
 import { useSession } from "next-auth/react"
-import debounce from "@/components/debounce"
+import debounce from "@/components/Debounce"
 import dynamic from "next/dynamic"
 import Comments from "@/components/strategyData/Comments"
+import { ErrorMessage } from "@/components/ui/MessageBox"
+import { ErrorMessageProps } from "@/components/ClientUtils"
 
 const page = () => {
   const { mapName, gamemode, stratId } = useParams() // Fetch mapName from the dynamic route
@@ -41,34 +38,37 @@ const page = () => {
   const { data: session, status } = useSession()
   const [liked, setLiked] = useState(false)
   const router = useRouter()
+  const { error, setError, closeErrorMessage } = ErrorMessageProps()
 
   const [showMessage, setShowMessage] = useState(false)
 
   const handleLike = debounce(async () => {
-    if (!session) {
+    if (!session?.user.id) {
       setShowMessage(true)
       setTimeout(() => setShowMessage(false), 2000) // Hide message after 2 seconds
       return
     }
-    const newLiked = !liked
-    console.log(liked)
-    setLiked(newLiked)
-    console.log(liked)
     // Toggle the liked state
+    const newLiked = !liked
+    setLiked(newLiked)
+
     const url = new URL("/api/strategy/strategyLikes", window.location.origin)
     url.searchParams.append("stratId", stratIdStr)
     url.searchParams.append("userId", session.user.id)
     url.searchParams.append("liked", liked.toString())
     try {
-      const response = await fetch(url.toString()) // Consider using POST for likes
+      const response = await fetch(url.toString())
       if (!response.ok) {
-        throw new Error("Network response was not ok") // Handle errors
+        setError(
+          "We couldn't save your changes, please try again later. If this error persists please contact the admin."
+        )
       }
       const data = await response.json()
       setStrategy(data)
     } catch (error) {
-      console.error("Error liking strategy:", error)
-      // Optionally, show an error message to the user
+      setError(
+        "We couldn't save your changes, please try again later. If this error persists please contact the admin."
+      )
     }
   }, 500)
 
@@ -100,16 +100,16 @@ const page = () => {
         url.searchParams.append("stratId", stratIdStr)
         const response = await fetch(url.toString()) // Make the request
         if (response.status === 404) {
-          console.log(404)
           router.replace("/404")
           return
         }
         const data = await response.json()
-        console.log(data)
         setStrategy(data)
         setLoading(false)
       } catch (error) {
-        console.error("Error fetching strategies:", error)
+        setError(
+          "We couldn't fetch this strategy, please try again later. If this error persists please contact the admin."
+        )
       }
     }
 
@@ -130,21 +130,37 @@ const page = () => {
     }
   }
 
-  const numberOfPlayers = strategy ? getNumberOfPlayers(strategy) : undefined
+  const goBackHandler = () => {
+    router.push(`/${gamemodeStr}/${mapNameStr}`)
+  }
 
+  const numberOfPlayers = strategy ? getNumberOfPlayers(strategy) : undefined
   return (
-    <div className="bg-slate-50 min-h-screen -mt-14">
-      <MaxWidthWapper className="lg:max-w-screen-lg md:max-w-screen-md pt-10 ">
-        {loading ? (
-          <div className="flex justify-center items-center min-h-screen -mt-10">
-            <Loader />
+    <div className="bg-primary">
+      {loading ? (
+        <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
+          <Loader />
+        </div>
+      ) : (
+        <>
+          <div className="fixed bottom-4 ml-4 p-4 z-110">
+            {error && (
+              <ErrorMessage
+                message={error}
+                closeErrorMessage={closeErrorMessage}
+              />
+            )}
           </div>
-        ) : (
-          <>
-            <section>
-              <div className="pb-52">
-                <div className="flex justify-center pt-20 pb-10">
-                  <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
+          <MaxWidthWapper className="lg:max-w-screen-lg md:max-w-screen-md pt-10">
+            <section className="bg-slate-50 rounded-lg shadow-md p-8 min-h-[calc(100vh-3.5rem)] lg:pr-20 lg:pl-20 mb-5">
+              <div className="mb-10">
+                <div className="relative flex justify-center pt-10 pb-10">
+                  <ArrowBigLeft
+                    className="hidden sm:block absolute left-0 text-primary fill-white cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 hover:fill-primary"
+                    size={"2.5rem"}
+                    onClick={goBackHandler}
+                  />
+                  <h1 className="tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
                     {strategy && strategy.name
                       ? `Strategy ${strategy.name}`
                       : `Strategy ${
@@ -152,6 +168,20 @@ const page = () => {
                         } for ${strategy?.gamemode?.toUpperCase()} ${mapNameStr}`}
                   </h1>
                 </div>
+
+                {strategy && strategy.map.image && (
+                  <div className="relative w-full h-64 flex flex-col items-center">
+                    <Image
+                      src={strategy.map.image}
+                      alt={strategy.map.name || "Map Image"}
+                      width={200}
+                      height={200}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      priority
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                )}
 
                 <div>
                   {strategy ? (
@@ -172,12 +202,15 @@ const page = () => {
                         {strategy.inGameGamemode && (
                           <p>In Game Difficulty: {strategy.inGameGamemode}</p>
                         )}
-                        <p>
-                          Created{" "}
-                          {formatDistanceToNow(new Date(strategy.createdAt), {
-                            addSuffix: true,
-                          })}
-                        </p>
+                        {strategy.createdAt && (
+                          <p>
+                            Created:{" "}
+                            {formatDistanceToNow(new Date(strategy.createdAt), {
+                              addSuffix: true,
+                            })}
+                          </p>
+                        )}
+
                         {strategy.description && (
                           <p>Description/Notes: {strategy.description}</p>
                         )}
@@ -187,7 +220,7 @@ const page = () => {
                           )}
                         <div className="flex flex-row justify-end gap-2">
                           <div className="cursor-pointer flex justify-center items-center">
-                            {session ? (
+                            {session?.user.id ? (
                               <span
                                 className={`hover:text-red-300 ${
                                   liked ? "text-red-500" : "text-gray-500"
@@ -236,10 +269,15 @@ const page = () => {
                                         : "Four"}
                                       :
                                     </AccordionTrigger>
-                                    <AccordionContent>
+                                    <AccordionContent className="pt-5">
                                       <PlayerStepData
-                                        strat={strategy}
+                                        playerData={
+                                          strategy.players
+                                            ? strategy.players[i]
+                                            : ({} as PlayerSteps)
+                                        }
                                         player={i}
+                                        gamemode={strategy.gamemode}
                                       />
                                     </AccordionContent>
                                   </AccordionItem>
@@ -257,19 +295,16 @@ const page = () => {
                 </div>
               </div>
             </section>
-            <section>
-              <div className="flex flex-col justify-center items-center pt-10 pb-10">
-                <h1 className="text-gray-900 text-xl md:text-2xl lg:text-3xl font-bold">
-                  Comments
-                </h1>
-                <div>
-                  <Comments />
+            <section className="bg-white rounded-lg p-8 shadow-md">
+              <div className="flex flex-col justify-center items-center">
+                <div className="w-full lg:pl-20 lg:pr-20">
+                  <Comments stratId={stratIdStr} />
                 </div>
               </div>
             </section>
-          </>
-        )}
-      </MaxWidthWapper>
+          </MaxWidthWapper>
+        </>
+      )}
     </div>
   )
 }

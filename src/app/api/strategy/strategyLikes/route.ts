@@ -54,6 +54,7 @@ export async function GET(req: Request) {
         createdBy: true,
         comments: { include: { author: true } },
         strategyLikes: true,
+        map: true,
       },
     })
 

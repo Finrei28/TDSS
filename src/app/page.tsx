@@ -21,7 +21,7 @@ export default function Home() {
                     <img
                       src="/TDS Special.png"
                       alt="TDS Special mode"
-                      className="rounded-sm w-full max-w-xs"
+                      className="rounded-sm w-full max-w-xs border-2 border-orange-400"
                     />
                   </div>
                 </Link>
@@ -31,7 +31,7 @@ export default function Home() {
                     <img
                       src="/TDS Normal.png"
                       alt="TDS Normal mode"
-                      className="rounded-sm w-full max-w-xs"
+                      className="rounded-sm w-full max-w-xs border-2 border-green-500"
                     />
                   </div>
                 </Link>
@@ -41,7 +41,7 @@ export default function Home() {
                     <img
                       src="/TDS Hardcore.png"
                       alt="TDS Hardcore mode"
-                      className="rounded-sm w-full max-w-xs"
+                      className="rounded-sm w-full max-w-xs border-2 border-purple-600"
                     />
                   </div>
                 </Link>

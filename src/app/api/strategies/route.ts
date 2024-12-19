@@ -13,6 +13,9 @@ export async function GET(req: Request) {
     ? gamemodeParam[0]
     : gamemodeParam
   const originalMapName = mapNameStr?.replace(/-/g, " ") // Replace hyphens with spaces
+  const map = await prisma.map.findFirst({
+    where: { name: originalMapName },
+  })
 
   try {
     const strategies = await prisma.strategy.findMany({
@@ -22,11 +25,8 @@ export async function GET(req: Request) {
       },
     })
 
-    return NextResponse.json(strategies, { status: 200 })
+    return NextResponse.json({ strategies, map }, { status: 200 })
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch strategies" },
-      { status: 500 }
-    )
+    return NextResponse.json(map, { status: 500 })
   }
 }

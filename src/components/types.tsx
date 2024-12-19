@@ -1,12 +1,12 @@
-import React from "react"
-
 export type PlayerData = {
+  id?: number
   waveStart: string
   waveEnd: string
   description: string
 }
 
 export type PlayerSteps = {
+  id?: number
   playerNo: number
   consumables: string[]
   towers: string[]
@@ -14,10 +14,10 @@ export type PlayerSteps = {
 }
 
 export type Map = {
-  id: number
+  id?: number
   name: string
-  image: string
-  difficulty: string
+  image?: string
+  difficulty?: string
 }
 
 export type User = {
@@ -30,19 +30,19 @@ export type User = {
 }
 
 export type StrategyType = {
-  id: number
+  id?: number
   name: string
-  map: Map
-  mapId: number
+  map: Map // Allow `map` to be a string or Map type
+  mapId?: number
   description: string
   numOfPlayer: string
   difficulty: string
   gamemode: string
-  inGameGamemode: string | null
+  inGameGamemode?: string | null
   players?: PlayerSteps[]
-  createdAt: Date
+  createdAt?: Date
   createdBy?: User
-  userId: string
+  userId?: string
   strategyLikes?: []
   comments?: []
 }
@@ -55,13 +55,27 @@ export type strategyLikes = {
   likedAt: Date
 }
 
-export type Comment = {
+export type CommentType = {
   id: number
   content: string
   createdAt: string
   author: {
     id: string
-    name: string
+    username: string
   }
-  replies: Comment[] // Recursive type for nested replies
+  replies: CommentType[] // Recursive type for nested replies
+  parentCommentId: number
+  stratId: string
+}
+
+export type initialStrategyType = {
+  id?: number
+  name: string
+  gamemode: string
+  difficulty: string
+  description: string
+  map: string
+  numOfPlayer: string
+  inGameGamemode: string
+  players: PlayerSteps[]
 }
