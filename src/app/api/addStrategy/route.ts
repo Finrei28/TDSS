@@ -64,9 +64,9 @@ export async function POST(request: Request) {
   } catch (error) {
     // Type assertion to check if the error is a known error type
     if (error instanceof PrismaClientKnownRequestError) {
-      console.error("Prisma Client Error:", error.message)
+      return NextResponse.json({ error: error.message }, { status: 400 })
     } else {
-      console.error("An error occurred:", error)
+      return NextResponse.json({ error: error }, { status: 400 })
     }
   }
 }

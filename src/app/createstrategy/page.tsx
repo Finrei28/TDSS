@@ -158,7 +158,7 @@ const createstrategy = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(strat), // Send your strat data to the backend API
+        body: JSON.stringify(strat), // Send strat data to the backend API
       })
 
       if (!response.ok) {
@@ -189,7 +189,6 @@ const createstrategy = () => {
         setSuccess(false)
       }, 3000)
       const data = await response.json()
-      console.log("Strategy created:", data)
     } catch (error) {
       setError("Failed to create strategy, contact the admin if this persists")
     }
@@ -220,7 +219,7 @@ const createstrategy = () => {
     MaxPlayerKey,
     parseInt(strat.numOfPlayer)
   )
-  console.log(strat)
+
   return (
     <div className="bg-slate-50 min-h-screen -mt-14">
       <section>

@@ -3,7 +3,6 @@ import { redirect } from "next/navigation"
 import React from "react"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
-import OrdinalTitle from "@/components/dashboard/OrdinalTitle"
 import EditComponent from "@/components/dashboard/EditComponent"
 
 const page = async () => {
