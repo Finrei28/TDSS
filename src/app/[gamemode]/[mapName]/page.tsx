@@ -26,7 +26,7 @@ const MapStrategiesPage = () => {
   useEffect(() => {
     // Set the tab title dynamically
     if (mapName && gamemode) {
-      document.title = `Map - ${mapName} (${gamemode})`
+      document.title = `${mapName} (${gamemode})`
     }
   }, [mapName, gamemode])
 

@@ -27,7 +27,7 @@ const page = () => {
   useEffect(() => {
     // Set the tab title dynamically
     if (gamemode) {
-      document.title = `Gamemode - ${gamemode}`
+      document.title = `${gamemodeStr.toUpperCase()} (Gamemode)`
     }
   }, [gamemode])
 
