@@ -1,8 +1,5 @@
 "use client"
 import React, { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -11,16 +8,13 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import MaxWidthWapper from "../MaxWidthWapper"
-import Link from "next/link"
+
 import { Textarea } from "../ui/textarea"
 import postComment from "./PostComment"
 import { SuccessMessage } from "../ui/MessageBox"
-import { useSearchParams } from "next/navigation"
 
 // Define your validation schema
 const FormSchema = z.object({

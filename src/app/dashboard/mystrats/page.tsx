@@ -33,7 +33,7 @@ const myStrats = () => {
         const response = await fetch("/api/strategy/myStrategies")
         const result = await response.json()
         setStrategies(result)
-        setLoading(false)
+        setLoading(true)
       } catch (error) {
         setError("Could not load your strategies")
       }

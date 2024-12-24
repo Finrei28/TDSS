@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -18,13 +18,14 @@ import { useSearchParams, useRouter } from "next/navigation"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
 import { ErrorMessageProps } from "@/components/ClientUtils"
 import { SuccessMessage, ErrorMessage } from "@/components/ui/MessageBox"
+import Loader from "@/components/Loader"
 
 const FormSchema = z.object({
   password: z.string().min(1, "Password is required"),
   confirmPassword: z.string().min(1, "Confirm your password"),
 })
 
-export default function ResetPassword() {
+function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isFormLoading, setIsFormLoading] = useState(false)
@@ -189,3 +190,19 @@ export default function ResetPassword() {
     </div>
   )
 }
+
+const page = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[calc(100vh-3.5rem)] flex justify-center items-center">
+          <Loader />
+        </div>
+      }
+    >
+      <ResetPassword />
+    </Suspense>
+  )
+}
+
+export default page

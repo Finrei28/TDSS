@@ -1,6 +1,6 @@
 "use client"
 import { getSession, signIn } from "next-auth/react"
-import React, { useState } from "react"
+import React, { Suspense, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -20,13 +20,14 @@ import { SubmitButton } from "@/components/SubmitButton"
 import SignInVerification from "@/components/SignInVerification"
 import { EyeOff, Eye } from "lucide-react"
 import ForgotPassword from "@/components/ForgotPassword"
+import Loader from "@/components/Loader"
 
 const FormSchema = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(1, "Password is required"),
 })
 
-export default function SignIn() {
+function SignIn() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -234,3 +235,19 @@ export default function SignIn() {
     </div>
   )
 }
+
+const page = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[calc(100vh-3.5rem)] flex justify-center items-center">
+          <Loader />
+        </div>
+      }
+    >
+      <SignIn />
+    </Suspense>
+  )
+}
+
+export default page

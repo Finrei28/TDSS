@@ -2,12 +2,13 @@
 
 import FormField from "@/components/FormField"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
-import React, { ChangeEvent, useEffect, useState } from "react"
+import React, { ChangeEvent, Suspense, useEffect, useState } from "react"
 import { X } from "lucide-react"
-import { buttonVariants, Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { redirect, useSearchParams } from "next/navigation"
 import { useSession } from "next-auth/react"
+import Loader from "@/components/Loader"
 
 const fileToBase64 = (file: File) => {
   return new Promise<string>((resolve, reject) => {
@@ -18,7 +19,7 @@ const fileToBase64 = (file: File) => {
   })
 }
 
-const page = () => {
+const AddMapForm = () => {
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -270,6 +271,20 @@ const page = () => {
         </form>
       </MaxWidthWapper>
     </section>
+  )
+}
+
+const page = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[calc(100vh-3.5rem)] flex justify-center items-center">
+          <Loader />
+        </div>
+      }
+    >
+      <AddMapForm />
+    </Suspense>
   )
 }
 
