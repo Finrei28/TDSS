@@ -39,8 +39,14 @@ const page = () => {
   const [liked, setLiked] = useState(false)
   const router = useRouter()
   const { error, setError, closeErrorMessage } = ErrorMessageProps()
-
   const [showMessage, setShowMessage] = useState(false)
+
+  useEffect(() => {
+    // Set the tab title dynamically
+    if (mapName && gamemode && stratId) {
+      document.title = `Strategy ${stratId} - ${mapName} (${gamemode})`
+    }
+  }, [mapName, gamemode, stratId])
 
   const handleLike = debounce(async () => {
     if (!session?.user.id) {

@@ -1,6 +1,6 @@
 "use client"
 import { getSession, signIn } from "next-auth/react"
-import React, { Suspense, useState } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -28,6 +28,11 @@ const FormSchema = z.object({
 })
 
 function SignIn() {
+  useEffect(() => {
+    // client-side title
+    document.title = "Sign In - TDSS"
+  }, [])
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {

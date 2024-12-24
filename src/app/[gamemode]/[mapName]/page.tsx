@@ -22,6 +22,14 @@ const MapStrategiesPage = () => {
   const { error, setError, closeErrorMessage } = ErrorMessageProps()
   const [map, setMap] = useState<Map | null>(null)
   const router = useRouter()
+
+  useEffect(() => {
+    // Set the tab title dynamically
+    if (mapName && gamemode) {
+      document.title = `Map - ${mapName} (${gamemode})`
+    }
+  }, [mapName, gamemode])
+
   useEffect(() => {
     const fetchStrategies = async () => {
       if (

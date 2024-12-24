@@ -1,11 +1,13 @@
 "use client"
-import React from "react"
+import React, { useEffect } from "react"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
 import Link from "next/link"
 
-// Define your validation schema
-
 export default function VerificationSuccess() {
+  useEffect(() => {
+    // // client-side title
+    document.title = "Register Complete - TDSS"
+  }, [])
   return (
     <div className="bg-primary">
       <section className="min-h-[calc(100vh-3.5rem)] flex justify-center items-center">

@@ -3,6 +3,14 @@ import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import LikedStrategies from "@/components/dashboard/likedcomponent"
+import { Metadata } from "next"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: `My liked strategies`,
+    description: `A list of liked strategies`,
+  }
+}
 
 const likedStrats = async () => {
   // Fetch the session

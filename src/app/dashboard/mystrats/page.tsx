@@ -14,6 +14,10 @@ import { useSession } from "next-auth/react"
 import Loader from "@/components/loader"
 
 const myStrats = () => {
+  useEffect(() => {
+    // // client-side title
+    document.title = "My Strategies - TDSS"
+  }, [])
   // Fetch the session
   const { data: session, status } = useSession()
 
@@ -33,7 +37,7 @@ const myStrats = () => {
         const response = await fetch("/api/strategy/myStrategies")
         const result = await response.json()
         setStrategies(result)
-        setLoading(true)
+        setLoading(false)
       } catch (error) {
         setError("Could not load your strategies")
       }

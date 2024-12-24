@@ -71,6 +71,10 @@ import { initialPlayerSteps, maxWaves } from "@/components/utils"
 import { ErrorMessageProps } from "@/components/ClientUtils"
 
 const createstrategy = () => {
+  useEffect(() => {
+    // // client-side title
+    document.title = "Create Strategy - TDSS"
+  }, [])
   const [strat, setStrat] = useState<StrategyType>({
     name: "",
     gamemode: "",

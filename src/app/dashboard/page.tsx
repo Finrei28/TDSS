@@ -3,7 +3,14 @@ import { authOptions } from "../api/auth/[...nextauth]/options"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
+import { Metadata } from "next"
 
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: `Dashboard`,
+    description: `My dashboard`,
+  }
+}
 // Main Dashboard Component
 const Dashboard: React.FC = async () => {
   const session = await getServerSession(authOptions)

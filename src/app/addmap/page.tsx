@@ -20,6 +20,10 @@ const fileToBase64 = (file: File) => {
 }
 
 const AddMapForm = () => {
+  useEffect(() => {
+    // // client-side title
+    document.title = "Add Map - TDSS"
+  }, [])
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -30,6 +30,11 @@ const FormSchema = z
   })
 
 export default function Register() {
+  useEffect(() => {
+    // // client-side title
+    document.title = "Create Account - TDSS"
+  }, [])
+
   const [verifyEmail, setVerifyEmail] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isFormLoading, setIsFormLoading] = useState(false)

@@ -26,6 +26,11 @@ const FormSchema = z.object({
 })
 
 function ResetPassword() {
+  useEffect(() => {
+    // // client-side title
+    document.title = "Reset Password - TDSS"
+  }, [])
+
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isFormLoading, setIsFormLoading] = useState(false)

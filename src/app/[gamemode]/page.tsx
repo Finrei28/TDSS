@@ -23,6 +23,14 @@ const page = () => {
   const gamemodeStr = Array.isArray(gamemode) ? gamemode[0] : gamemode
   const { error, setError, closeErrorMessage } = ErrorMessageProps()
   const router = useRouter()
+
+  useEffect(() => {
+    // Set the tab title dynamically
+    if (gamemode) {
+      document.title = `Gamemode - ${gamemode}`
+    }
+  }, [gamemode])
+
   useEffect(() => {
     if (
       gamemodeStr !== "hardcore" &&

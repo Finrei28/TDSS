@@ -4,6 +4,14 @@ import React from "react"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
 import EditComponent from "@/components/dashboard/EditComponent"
+import { Metadata } from "next"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: `Edit strategy`,
+    description: `Edit strategy`,
+  }
+}
 
 const page = async () => {
   const session = await getServerSession(authOptions)
