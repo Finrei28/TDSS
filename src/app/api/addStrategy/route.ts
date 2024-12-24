@@ -1,7 +1,7 @@
 // /app/api/strategy/route.ts
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma" // Assuming you have a Prisma setup in this path
-import { Difficulty, Gamemode, StratDifficulty } from "@prisma/client"
+import { Gamemode, StratDifficulty } from "@prisma/client"
 import { PlayerData, PlayerSteps } from "@/components/Types"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { authOptions } from "../auth/[...nextauth]/options"
