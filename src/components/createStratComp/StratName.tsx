@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { StrategyType } from "../Types"
+import { StrategyType } from "../types"
 import { StratRef } from "../dashboard/Props"
 
 // Define the schema for form validation

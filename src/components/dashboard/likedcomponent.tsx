@@ -4,10 +4,10 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { formatDistanceToNow } from "date-fns"
-import { strategyLikes } from "../Types"
-import { generateSlug } from "../Utils"
+import { strategyLikes } from "../types"
+import { generateSlug } from "../utils"
 import { ErrorMessageProps } from "../ClientUtils"
-import Loader from "../Loader"
+import Loader from "../loader"
 import { ErrorMessage } from "../ui/MessageBox"
 
 const LikedStrategies = () => {

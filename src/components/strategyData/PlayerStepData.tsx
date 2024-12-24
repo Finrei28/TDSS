@@ -1,5 +1,5 @@
 import React from "react"
-import { PlayerSteps } from "../Types"
+import { PlayerSteps } from "../types"
 
 type PlayerStepDataProps = {
   playerData?: PlayerSteps

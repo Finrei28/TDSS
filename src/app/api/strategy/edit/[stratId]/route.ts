@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
-import { PlayerData, PlayerSteps } from "@/components/Types"
+import { PlayerData, PlayerSteps } from "@/components/types"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
 

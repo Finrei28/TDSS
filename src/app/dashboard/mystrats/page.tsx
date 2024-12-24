@@ -2,16 +2,16 @@
 import React, { useEffect, useState } from "react"
 import { redirect } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
-import { StrategyType } from "@/components/Types"
+import { StrategyType } from "@/components/types"
 import { formatDistanceToNow } from "date-fns"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { generateSlug } from "@/components/Utils"
+import { generateSlug } from "@/components/utils"
 import { ErrorMessageProps } from "@/components/ClientUtils"
 import { ErrorMessage } from "@/components/ui/MessageBox"
 import { useSession } from "next-auth/react"
-import Loader from "@/components/Loader"
+import Loader from "@/components/loader"
 
 const myStrats = () => {
   // Fetch the session

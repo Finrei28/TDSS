@@ -3,7 +3,7 @@ import Modal from "@/components/ui/modal"
 import { signIn } from "next-auth/react"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import { PlayerSteps, StrategyType } from "./Types"
+import { PlayerSteps, StrategyType } from "./types"
 import { Button, buttonVariants } from "./ui/button"
 
 type ConfirmationModalProps = {

@@ -1,7 +1,7 @@
 import React, { useRef, useState, Suspense, useMemo } from "react"
 import EditButtons from "./editButtons"
-import { PlayerSteps, StrategyType } from "../Types"
-import { initialPlayerSteps } from "../Utils"
+import { PlayerSteps, StrategyType } from "../types"
+import { initialPlayerSteps } from "../utils"
 import PlayerStepData from "../strategyData/PlayerStepData"
 import _isEqual from "lodash/isEqual"
 

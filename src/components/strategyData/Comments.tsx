@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import CommentForm from "./Comment" // Make sure CommentForm is in a separate file
-import { CommentType } from "../Types"
+import { CommentType } from "../types"
 import { useSession } from "next-auth/react"
 
 type CommentsListProps = {

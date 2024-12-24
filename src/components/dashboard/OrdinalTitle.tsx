@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import { useFetchData } from "@/components/UseEffect"
-import { getOrdinal } from "@/components/Utils"
+import { getOrdinal } from "@/components/utils"
 import { useParams } from "next/navigation"
 
 type userStrats = {

@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { StrategyType } from "../Types"
+import { StrategyType } from "../types"
 import { forwardRef, useImperativeHandle } from "react"
 import { DifficultyProps, StratRef } from "../dashboard/Props"
 

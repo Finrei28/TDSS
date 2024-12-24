@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma" // Assuming you have a Prisma setup in this path
 import { Gamemode, StratDifficulty } from "@prisma/client"
-import { PlayerData, PlayerSteps } from "@/components/Types"
+import { PlayerData, PlayerSteps } from "@/components/types"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { authOptions } from "../auth/[...nextauth]/options"
 import { getServerSession } from "next-auth"

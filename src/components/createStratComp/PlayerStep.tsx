@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react"
-import { PlayerSteps, PlayerData, StrategyType, Map } from "../Types"
+import { PlayerSteps, PlayerData, StrategyType, Map } from "../types"
 
 import {
   Select,
@@ -20,9 +20,9 @@ import {
 
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "../ui/button"
-import { Towers, Consumables } from "../ItemsList"
 import { Checkbox } from "@/components/ui/checkbox"
 import { StratRef } from "../dashboard/Props"
+import { Consumables, Towers } from "../itemsList"
 
 type PlayerStepProps = {
   player: number

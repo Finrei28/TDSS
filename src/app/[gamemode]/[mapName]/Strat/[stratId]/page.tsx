@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation" // Get the dynamic route parameter
-import { PlayerSteps, strategyLikes, StrategyType } from "@/components/Types"
+import { PlayerSteps, strategyLikes, StrategyType } from "@/components/types"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
 import { ArrowBigLeft, Heart } from "lucide-react"
 import {
@@ -21,12 +21,12 @@ const PlayerStepData = dynamic(
 )
 import { formatDistanceToNow } from "date-fns"
 import { useSession } from "next-auth/react"
-import debounce from "../../../../../components/Debounce"
+import debounce from "@/components/debounce"
 import dynamic from "next/dynamic"
 import Comments from "@/components/strategyData/Comments"
 import { ErrorMessage } from "@/components/ui/MessageBox"
 import { ErrorMessageProps } from "@/components/ClientUtils"
-import Loader from "../../../../../components/Loader"
+import Loader from "@/components/loader"
 
 const page = () => {
   const { mapName, gamemode, stratId } = useParams() // Fetch mapName from the dynamic route

@@ -18,7 +18,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
 import { ErrorMessageProps } from "@/components/ClientUtils"
 import { SuccessMessage, ErrorMessage } from "@/components/ui/MessageBox"
-import Loader from "@/components/Loader"
+import Loader from "@/components/loader"
 
 const FormSchema = z.object({
   password: z.string().min(1, "Password is required"),

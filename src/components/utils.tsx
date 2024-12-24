@@ -1,4 +1,4 @@
-import { PlayerData } from "./Types"
+import { PlayerData } from "./types"
 
 export const generateSlug = (name: string) => {
   return name

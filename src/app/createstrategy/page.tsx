@@ -62,12 +62,12 @@ const ConfirmationModal = dynamic(
   }
 )
 
-import { PlayerSteps, StrategyType } from "@/components/Types"
+import { PlayerSteps, StrategyType } from "@/components/types"
 import StratName from "@/components/createStratComp/StratName"
 import { Button } from "@/components/ui/button"
 import { useSession } from "next-auth/react"
 import { ErrorMessage, SuccessMessage } from "@/components/ui/MessageBox"
-import { initialPlayerSteps, maxWaves } from "@/components/Utils"
+import { initialPlayerSteps, maxWaves } from "@/components/utils"
 import { ErrorMessageProps } from "@/components/ClientUtils"
 
 const createstrategy = () => {

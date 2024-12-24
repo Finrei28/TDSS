@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { Map, PlayerSteps, StrategyType } from "../Types"
+import { Map, PlayerSteps, StrategyType } from "../types"
 import { ErrorMessage } from "../ui/MessageBox"
 import { ErrorMessageProps } from "../ClientUtils"
 

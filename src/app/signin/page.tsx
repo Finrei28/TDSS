@@ -20,7 +20,7 @@ import { SubmitButton } from "@/components/SubmitButton"
 import SignInVerification from "@/components/SignInVerification"
 import { EyeOff, Eye } from "lucide-react"
 import ForgotPassword from "@/components/ForgotPassword"
-import Loader from "@/components/Loader"
+import Loader from "@/components/loader"
 
 const FormSchema = z.object({
   email: z.string().email("Invalid email"),

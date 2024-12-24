@@ -2,12 +2,12 @@
 
 import React, { useState } from "react"
 import { useFetchData } from "@/components/UseEffect"
-import { maxWaves } from "@/components/Utils"
+import { maxWaves } from "@/components/utils"
 import { ErrorMessageProps } from "../ClientUtils"
 import { useParams } from "next/navigation"
-import { PlayerSteps, StrategyType, Map } from "../Types"
+import { PlayerSteps, StrategyType, Map } from "../types"
 import MaxWidthWapper from "../MaxWidthWapper"
-import Loader from "../Loader"
+import Loader from "../loader"
 import OrdinalTitle from "./OrdinalTitle"
 
 import StratCards from "./StratCards"

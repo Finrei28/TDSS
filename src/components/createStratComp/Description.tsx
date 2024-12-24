@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { StrategyType } from "../Types"
+import { StrategyType } from "../types"
 import { Textarea } from "@/components/ui/textarea"
 import { StratRef } from "../dashboard/Props"
 

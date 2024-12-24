@@ -8,7 +8,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { redirect, useSearchParams } from "next/navigation"
 import { useSession } from "next-auth/react"
-import Loader from "@/components/Loader"
+import Loader from "@/components/loader"
 
 const fileToBase64 = (file: File) => {
   return new Promise<string>((resolve, reject) => {

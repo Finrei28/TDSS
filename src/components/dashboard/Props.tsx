@@ -1,4 +1,4 @@
-import { PlayerData, PlayerSteps, StrategyType, Map } from "../Types"
+import { PlayerData, PlayerSteps, StrategyType, Map } from "../types"
 
 export interface StratRef {
   submit: () => void
