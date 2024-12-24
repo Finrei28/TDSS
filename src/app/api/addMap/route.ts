@@ -38,9 +38,6 @@ export async function POST(req: Request) {
     })
     return NextResponse.json(newMap, { status: 200 })
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to upload image" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Failed to create map" }, { status: 500 })
   }
 }
