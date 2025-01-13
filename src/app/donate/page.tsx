@@ -41,6 +41,7 @@ const page = () => {
                 <p className="text-sm text-gray-600">
                   Donations are non-refundable
                 </p>
+                <p className="text-sm text-gray-600">Donations are in USD</p>
               </div>
               <div className="grid grid-cols-3 gap-3 font-bold">
                 {amounts.map((amount, index) => (
