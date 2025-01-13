@@ -50,6 +50,8 @@ const PaymentSuccess = () => {
 
     if (userId) {
       postDonation()
+    } else {
+      setLoading(false)
     }
   }, [paymentSuccess, donationAmount, paymentIntent, userId])
 
