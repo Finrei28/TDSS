@@ -1,13 +1,13 @@
 "use client"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
-import React, { useEffect, useState } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import { CircleCheck } from "lucide-react"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Loader from "@/components/loader"
 
-const page = () => {
+const PaymentSuccess = () => {
   const { data: session } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -88,6 +88,20 @@ const page = () => {
         </>
       )}
     </div>
+  )
+}
+
+const page = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[calc(100vh-3.5rem)] flex justify-center items-center">
+          <Loader />
+        </div>
+      }
+    >
+      <PaymentSuccess />
+    </Suspense>
   )
 }
 
