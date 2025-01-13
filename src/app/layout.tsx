@@ -19,10 +19,6 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "TDSS",
   description: "Tower Defense Simulator Strategies",
-  icons: {
-    icon: "/favicon-32x32.ico", // Default 32x32 icon
-    apple: "/favicon-192x192.png", // For iOS devices
-  },
 }
 
 export default function RootLayout({
@@ -33,14 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Add favicon */}
-        <head>
-          {/* Link to different icon sizes */}
-          <link rel="icon" href="/favicon-32x32.ico" sizes="32x32" />
-          <link rel="icon" href="/favicon-48x48.ico" sizes="48x48" />
-          <link rel="icon" href="/favicon-16x16.ico" sizes="16x16" />
-          <link rel="apple-touch-icon" href="/favicon-192x192.png" />
-        </head>
+        <link rel="icon" href="favicon.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
