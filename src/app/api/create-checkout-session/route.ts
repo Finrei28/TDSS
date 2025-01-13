@@ -12,6 +12,7 @@ export async function POST(req: Request) {
     const session = await stripe.paymentIntents.create({
       amount: amount * 100,
       currency: "usd",
+      statement_descriptor_suffix: `DONATION USD ${amount}`,
     })
 
     return NextResponse.json(
