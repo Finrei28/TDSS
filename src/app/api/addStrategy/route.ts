@@ -7,14 +7,14 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { authOptions } from "../auth/[...nextauth]/options"
 import { getServerSession } from "next-auth"
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   const session = await getServerSession(authOptions)
   if (!session?.user.id) {
     return NextResponse.json({ error: "Unauthenticated" }, { status: 401 })
   }
 
   try {
-    const strat = await request.json() // Get the data from the client request
+    const strat = await req.json() // Get the data from the client request
     // 1. Find the map by name
     const map = await prisma.map.findUnique({
       where: { name: strat.map.name },

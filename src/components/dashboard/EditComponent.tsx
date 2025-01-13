@@ -94,7 +94,7 @@ const EditComponent = ({ userId }: EditComponentProps) => {
   return (
     <div>
       {loading ? (
-        <div className="flex justify-center items-center min-h-[calc(100vh-6.25rem)] -mt-14">
+        <div className="flex justify-center items-center min-h-[calc(100vh-6rem)]">
           <Loader />
         </div>
       ) : (

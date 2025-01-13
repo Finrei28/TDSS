@@ -43,7 +43,7 @@ const LikedStrategies = () => {
   return (
     <div>
       {loading ? (
-        <div className="min-h-[calc(100vh-6.25rem)] flex justify-center items-center -mt-14">
+        <div className="min-h-[calc(100vh-13.5rem)] flex justify-center items-center">
           <Loader />
         </div>
       ) : (

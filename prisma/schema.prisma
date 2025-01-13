@@ -38,6 +38,17 @@ model User {
   strategies             Strategy[]     @relation("UserStrategies")
   strategyLikes          UserStrategyLike[]
   comments               Comment[]
+  donations              Donation[]
+}
+
+model Donation {
+  id           String      @id @default(cuid())
+  userId       String
+  amount       Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  paymentMethod String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {

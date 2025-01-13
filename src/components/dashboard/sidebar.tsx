@@ -30,6 +30,14 @@ export const DashboardSidebar = () => {
               Liked Strats
             </Link>
           </li>
+          <li>
+            <Link
+              href="/dashboard/donations"
+              className="block hover:text-primary hover:bg-white p-2 rounded-lg"
+            >
+              Donations
+            </Link>
+          </li>
         </ul>
       </aside>
       <MobileSideBar />

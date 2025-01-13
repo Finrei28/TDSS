@@ -102,6 +102,8 @@ const NavBar = () => {
                       ? ""
                       : currentPath === "/register"
                       ? ""
+                      : currentPath === "/payment-success"
+                      ? "/"
                       : currentPath
                   }`}
                   className={buttonVariants({ size: "lg", variant: "ghost" })}
