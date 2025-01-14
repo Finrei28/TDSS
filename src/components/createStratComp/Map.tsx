@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react"
 import { Map, PlayerSteps, StrategyType } from "../types"
 import { ErrorMessage } from "../ui/MessageBox"
 import { ErrorMessageProps } from "../ClientUtils"
+import Loader from "../loader"
 
 type setMapProps = {
   setStrat: React.Dispatch<React.SetStateAction<StrategyType>>
@@ -17,6 +18,7 @@ const StratMap = ({ setStrat, gamemode, map }: setMapProps) => {
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredMaps, setFilteredMaps] = useState<Map[]>([])
   const { error, setError, closeErrorMessage } = ErrorMessageProps()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchMaps = async () => {
@@ -34,6 +36,7 @@ const StratMap = ({ setStrat, gamemode, map }: setMapProps) => {
         if (map) {
           setSelectedMap(map.name)
         }
+        setLoading(false)
       } catch (error) {
         setError(
           "Could not load the maps, please try reloading the page. If the error persists, please contact the admin."
@@ -62,34 +65,45 @@ const StratMap = ({ setStrat, gamemode, map }: setMapProps) => {
 
   return (
     <div>
-      <div className="fixed bottom-4 ml-4 p-4 z-110">
-        {error && (
-          <ErrorMessage message={error} closeErrorMessage={closeErrorMessage} />
-        )}
-      </div>
-      <div className="mb-4 flex justify-center">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search maps..."
-          className="w-1/3 px-4 py-3 border rounded-xl "
-        />
-      </div>
-      <div className="grid md:grid-cols-4 sm:grid-cols-3 gap-4 mt-5 justify-center md:justify-start">
-        {filteredMaps.map((map) => (
-          <button
-            key={map.name}
-            onClick={() => handleMapClick(map.name)}
-            className={`w-full border rounded-lg p-4 ${
-              selectedMap === map.name ? "border-primary ring-primary" : ""
-            }`}
-          >
-            <img src={map.image} alt={map.name} className="w-full" />
-            <h2 className="text-center">{map.name}</h2>
-          </button>
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex justify-center">
+          <Loader />
+        </div>
+      ) : (
+        <>
+          <div className="fixed bottom-4 ml-4 p-4 z-110">
+            {error && (
+              <ErrorMessage
+                message={error}
+                closeErrorMessage={closeErrorMessage}
+              />
+            )}
+          </div>
+          <div className="mb-4 flex justify-center">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search maps..."
+              className="w-1/3 px-4 py-3 border rounded-xl "
+            />
+          </div>
+          <div className="grid md:grid-cols-4 sm:grid-cols-3 gap-4 mt-5 justify-center md:justify-start">
+            {filteredMaps.map((map) => (
+              <button
+                key={map.name}
+                onClick={() => handleMapClick(map.name)}
+                className={`w-full border rounded-lg p-4 ${
+                  selectedMap === map.name ? "border-primary ring-primary" : ""
+                }`}
+              >
+                <img src={map.image} alt={map.name} className="w-full" />
+                <h2 className="text-center">{map.name}</h2>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }

@@ -295,7 +295,7 @@ const createstrategy = () => {
                 </AccordionContent>
               </AccordionItem>
             )}
-            {strat.gamemode === "normal" && (
+            {strat.gamemode.toLowerCase() === "normal" && (
               <AccordionItem value="item-3">
                 <AccordionTrigger>
                   <div>
@@ -314,8 +314,10 @@ const createstrategy = () => {
               </AccordionItem>
             )}
 
-            {((strat.gamemode === "normal" && strat.inGameGamemode) ||
-              (strat.gamemode !== "normal" && strat.gamemode)) && (
+            {((strat.gamemode.toLowerCase() === "normal" &&
+              strat.inGameGamemode) ||
+              (strat.gamemode.toLowerCase() !== "normal" &&
+                strat.gamemode)) && (
               <AccordionItem value="item-4">
                 <AccordionTrigger>
                   <div>
