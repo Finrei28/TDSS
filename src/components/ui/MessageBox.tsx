@@ -34,7 +34,6 @@ export function ErrorMessage({
   message,
   closeErrorMessage,
 }: ErrorMessageProps) {
-  console.log(message)
   return (
     <div
       className="flex items-center justify-center p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg border border-red-400 shadow-md"

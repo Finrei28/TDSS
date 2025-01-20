@@ -18,6 +18,7 @@ export type Map = {
   name: string
   image?: string
   difficulty?: string
+  gamemode?: string
 }
 
 export type User = {

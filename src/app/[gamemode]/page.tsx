@@ -2,26 +2,23 @@
 import MaxWidthWapper from "@/components/MaxWidthWapper"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import Loader from "@/components/loader"
 import Image from "next/image"
 import { ErrorMessage } from "@/components/ui/MessageBox"
 import { ErrorMessageProps } from "@/components/ClientUtils"
 import { ArrowBigLeft } from "lucide-react"
-
-type MapType = {
-  name: string
-  image: string
-  difficulty: string
-  gamemodes: string[]
-}
+import { useQuery, UseQueryOptions } from "@tanstack/react-query"
+import { Map } from "@/components/types"
 
 const page = () => {
-  const [maps, setMaps] = useState<MapType[]>([])
   const { gamemode } = useParams()
-  const [loading, setLoading] = useState(true)
   const gamemodeStr = Array.isArray(gamemode) ? gamemode[0] : gamemode
-  const { error, setError, closeErrorMessage } = ErrorMessageProps()
+  const {
+    error: customError,
+    setError,
+    closeErrorMessage,
+  } = ErrorMessageProps()
   const router = useRouter()
 
   useEffect(() => {
@@ -40,24 +37,39 @@ const page = () => {
       router.replace("/404")
       return
     }
-    const fetchMaps = async () => {
-      try {
-        const url = new URL("/api/maps", window.location.origin)
-        url.searchParams.append("gamemode", gamemodeStr)
-
-        const response = await fetch(url.toString())
-        const data = await response.json()
-        setMaps(data)
-        setLoading(false)
-      } catch (error) {
-        setError(
-          "Could not fetch maps, please try again later. If this error persists please contact the admin."
-        )
-      }
-    }
-
-    fetchMaps()
   }, [])
+
+  const fetchMaps = async (gamemodeStr: string): Promise<Map[]> => {
+    const url = new URL("/api/maps", window.location.origin)
+    url.searchParams.append("gamemode", gamemodeStr)
+
+    const response = await fetch(url.toString())
+    if (!response.ok) {
+      throw new Error(
+        "Failed to fetch maps, please try again later. If this error persists please contact the admin."
+      )
+    }
+    return await response.json()
+  }
+
+  const {
+    data: maps,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Map[], Error>({
+    queryKey: ["maps", gamemodeStr], // Pass the query key
+    queryFn: () => fetchMaps(gamemodeStr), // Pass the fetch function
+    staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    cacheTime: 60 * 60 * 1000, // Retain cache for 60 minutes
+  } as UseQueryOptions<Map[], Error>)
+
+  useEffect(() => {
+    // If there's an error from the query, pass it to the custom error handler
+    if (isError && error) {
+      setError(error.message || "An error occurred while fetching maps")
+    }
+  }, [isError, error, setError])
 
   const generateSlug = (name: string) => {
     return name
@@ -72,16 +84,16 @@ const page = () => {
   return (
     <div className="bg-slate-50 min-h-[calc(100vh-3.5rem)]">
       <section>
-        {loading ? (
+        {isLoading ? (
           <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
             <Loader />
           </div>
-        ) : maps.length > 0 ? (
+        ) : maps && maps.length > 0 ? (
           <div>
             <div className="fixed bottom-4 ml-4 p-4 z-110">
-              {error && (
+              {customError && (
                 <ErrorMessage
-                  message={error}
+                  message={customError}
                   closeErrorMessage={closeErrorMessage}
                 />
               )}
@@ -111,13 +123,16 @@ const page = () => {
                           : "bg-purple-600"
                       } transition-transform duration-300 hover:scale-105`}
                     >
-                      <Image
-                        src={map.image}
-                        alt={map.name}
-                        width={184}
-                        height={184}
-                        className="w-full object-contain"
-                      />
+                      {map && map.image && (
+                        <Image
+                          src={map.image}
+                          alt={map.name}
+                          width={184}
+                          height={184}
+                          className="w-full object-contain"
+                        />
+                      )}
+
                       <h2 className="text-center mt-2">{map.name}</h2>
                     </Link>
                   ))}
@@ -127,10 +142,20 @@ const page = () => {
           </div>
         ) : (
           <MaxWidthWapper>
-            <div className="flex flex-col items-center justify-center mb-10">
-              <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
-                No maps found
-              </h1>
+            <div>
+              <div className="fixed bottom-4 ml-14 p-4 z-110">
+                {customError && (
+                  <ErrorMessage
+                    message={customError}
+                    closeErrorMessage={closeErrorMessage}
+                  />
+                )}
+              </div>
+              <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
+                <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
+                  No maps found
+                </h1>
+              </div>
             </div>
           </MaxWidthWapper>
         )}

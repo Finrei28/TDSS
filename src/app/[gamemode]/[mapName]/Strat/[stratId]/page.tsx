@@ -27,6 +27,7 @@ import Comments from "@/components/strategyData/Comments"
 import { ErrorMessage } from "@/components/ui/MessageBox"
 import { ErrorMessageProps } from "@/components/ClientUtils"
 import Loader from "@/components/loader"
+import { useQuery, UseQueryOptions } from "@tanstack/react-query"
 
 const page = () => {
   const { mapName, gamemode, stratId } = useParams() // Fetch mapName from the dynamic route
@@ -34,11 +35,14 @@ const page = () => {
   const mapNameStr = Array.isArray(mapName) ? mapName[0] : mapName
   const gamemodeStr = Array.isArray(gamemode) ? gamemode[0] : gamemode
   const [strategy, setStrategy] = useState<StrategyType | null>(null)
-  const [loading, setLoading] = useState(true)
   const { data: session, status } = useSession()
   const [liked, setLiked] = useState(false)
   const router = useRouter()
-  const { error, setError, closeErrorMessage } = ErrorMessageProps()
+  const {
+    error: customError,
+    setError,
+    closeErrorMessage,
+  } = ErrorMessageProps()
   const [showMessage, setShowMessage] = useState(false)
 
   useEffect(() => {
@@ -98,29 +102,56 @@ const page = () => {
       router.replace("/404")
       return
     }
-    const fetchStrategies = async () => {
-      try {
-        const url = new URL("/api/strategy", window.location.origin)
-        url.searchParams.append("mapName", mapNameStr) // Append gamemode as a query parameter
-        url.searchParams.append("gamemode", gamemodeStr)
-        url.searchParams.append("stratId", stratIdStr)
-        const response = await fetch(url.toString()) // Make the request
-        if (response.status === 404) {
-          router.replace("/404")
-          return
-        }
-        const data = await response.json()
-        setStrategy(data)
-        setLoading(false)
-      } catch (error) {
-        setError(
-          "We couldn't fetch this strategy, please try again later. If this error persists please contact the admin."
-        )
-      }
-    }
-
-    fetchStrategies()
   }, [stratId])
+
+  const fetchStrategy = async (
+    mapNameStr: string,
+    gamemodeStr: string,
+    stratIdStr: string
+  ): Promise<StrategyType> => {
+    const url = new URL("/api/strategy", window.location.origin)
+    url.searchParams.append("mapName", mapNameStr) // Append gamemode as a query parameter
+    url.searchParams.append("gamemode", gamemodeStr)
+    url.searchParams.append("stratId", stratIdStr)
+    const response = await fetch(url.toString()) // Make the request
+    if (response.status === 404) {
+      router.replace("/404")
+      throw new Error("Page not found")
+    }
+    if (!response.ok) {
+      throw new Error(
+        "Failed to fetch this strategy, please try again later. If this error persists please contact the admin."
+      )
+    }
+    const data = await response.json()
+    return data
+  }
+
+  const {
+    data: strategyData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<StrategyType, Error>({
+    queryKey: ["strategyData", mapNameStr, gamemodeStr, stratIdStr], // Pass the query key
+    queryFn: () => fetchStrategy(mapNameStr, gamemodeStr, stratIdStr), // Pass the fetch function
+    staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    cacheTime: 60 * 60 * 1000, // Retain cache for 60 minutes
+  } as UseQueryOptions<StrategyType, Error>)
+
+  useEffect(() => {
+    if (strategyData) {
+      setStrategy(strategyData)
+    }
+  }, [strategyData])
+
+  useEffect(() => {
+    // If there's an error from the query, pass it to the custom error handler
+    if (isError && error) {
+      setError(error.message || "An error occurred while fetching the strategy")
+    }
+  }, [isError, error, setError])
+
   const getNumberOfPlayers = (strategy: StrategyType) => {
     switch (strategy.numOfPlayer) {
       case "ONE":
@@ -143,16 +174,16 @@ const page = () => {
   const numberOfPlayers = strategy ? getNumberOfPlayers(strategy) : undefined
   return (
     <div className="bg-primary">
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
           <Loader />
         </div>
       ) : (
         <>
           <div className="fixed bottom-4 ml-4 p-4 z-110">
-            {error && (
+            {customError && (
               <ErrorMessage
-                message={error}
+                message={customError}
                 closeErrorMessage={closeErrorMessage}
               />
             )}

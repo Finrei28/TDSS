@@ -4,6 +4,9 @@ import "./globals.css"
 import NavBar from "../components/NavBar"
 import AuthProvider from "@/components/AuthProvider"
 import ErrorBoundary from "@/components/ErrorBoundary" // Import the ErrorBoundary component
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { QueryProvider } from "@/components/QueryProvider"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,6 +24,8 @@ export const metadata: Metadata = {
   description: "Tower Defense Simulator Strategies",
 }
 
+const queryClient = new QueryClient()
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,8 +41,10 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ErrorBoundary>
-            <NavBar />
-            <main>{children}</main>
+            <QueryProvider>
+              <NavBar />
+              <main>{children}</main>
+            </QueryProvider>
           </ErrorBoundary>
         </AuthProvider>
       </body>
