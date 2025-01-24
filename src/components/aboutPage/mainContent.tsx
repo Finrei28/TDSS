@@ -59,9 +59,12 @@ const AboutContent = ({ images }: AboutContentProps) => {
             key={image.id}
             src={image.url}
             alt={`Left Image ${index + 1}`}
-            className={`w-40 h-auto transform rotate-[${
-              index % 2 === 0 ? "-10deg" : "10deg"
-            }] translate-y-[-${20 + index * 5}%] shadow-lg`}
+            className={`w-40 h-auto transform translate-y-[-${
+              20 + index * 5
+            }%] shadow-lg`}
+            style={{
+              transform: `rotate(${index % 2 === 0 ? -10 : 10}deg)`,
+            }}
           />
         ))}
       </div>
@@ -73,9 +76,12 @@ const AboutContent = ({ images }: AboutContentProps) => {
             key={image.id}
             src={image.url}
             alt={`Right Image ${index + 1}`}
-            className={`w-40 h-auto transform rotate-[${
-              index % 2 === 0 ? "10deg" : "-10deg"
-            }] translate-y-[${20 + index * 5}%] shadow-lg`}
+            className={`w-40 h-auto transform translate-y-[${
+              20 + index * 5
+            }%] shadow-lg`}
+            style={{
+              transform: `rotate(${index % 2 === 0 ? -10 : 10}deg)`,
+            }}
           />
         ))}
       </div>
