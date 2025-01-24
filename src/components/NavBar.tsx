@@ -41,7 +41,7 @@ const NavBar = () => {
       <MaxWidthWapper className="max-w-none">
         <div className="flex h-14 w-full items-center justify-between border-b border-zinc-200 px-4">
           {/* Logo */}
-          <Link href="/" className="flex z-40 font-semibold">
+          <Link href="/">
             <img src="/logo.png" alt="logo" className="h-9" />
           </Link>
 
@@ -62,6 +62,13 @@ const NavBar = () => {
               <></>
             ) : session?.user.id ? (
               <>
+                <Link
+                  href="/about"
+                  className={buttonVariants({ size: "lg", variant: "ghost" })}
+                >
+                  About
+                </Link>
+
                 {session.user.role === "ADMIN" && (
                   <Link
                     href="/addmap"
@@ -90,6 +97,12 @@ const NavBar = () => {
               </>
             ) : (
               <>
+                <Link
+                  href="/about"
+                  className={buttonVariants({ size: "lg", variant: "ghost" })}
+                >
+                  About
+                </Link>
                 <Link
                   href="/donate"
                   className={buttonVariants({ size: "lg", variant: "ghost" })}
@@ -147,6 +160,12 @@ const NavBar = () => {
                       <CircleUserRound size={"24px"} cursor={"pointer"} />
                     </span>
                   </Link>
+                  <Link
+                    href="/about"
+                    className={buttonVariants({ size: "lg", variant: "ghost" })}
+                  >
+                    About
+                  </Link>
                   {session.user.role === "ADMIN" && (
                     <Link
                       href="/addmap"
@@ -176,6 +195,12 @@ const NavBar = () => {
                 </>
               ) : (
                 <>
+                  <Link
+                    href="/about"
+                    className={buttonVariants({ size: "lg", variant: "ghost" })}
+                  >
+                    About
+                  </Link>
                   <Link
                     href="/donate"
                     className={buttonVariants({ size: "sm", variant: "ghost" })}

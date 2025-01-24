@@ -69,6 +69,7 @@ import { useSession } from "next-auth/react"
 import { ErrorMessage, SuccessMessage } from "@/components/ui/MessageBox"
 import { initialPlayerSteps, maxWaves } from "@/components/utils"
 import { ErrorMessageProps } from "@/components/ClientUtils"
+import ResetStratModal from "@/components/resetStratModal"
 
 const createstrategy = () => {
   useEffect(() => {
@@ -91,6 +92,7 @@ const createstrategy = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [success, setSuccess] = useState(false)
   const { error, setError, closeErrorMessage } = ErrorMessageProps()
+  const [resetModal, setResetModal] = useState(false)
 
   const [nextCheck, setNextCheck] = useState({
     playerOne: false,
@@ -219,10 +221,43 @@ const createstrategy = () => {
     }
   }
 
+  const openResetModal = () => {
+    setResetModal(true)
+  }
+
+  const closeResetModal = () => {
+    setResetModal(false)
+  }
+
+  const handleReset = () => {
+    sessionStorage.removeItem("stratData")
+    setStrat({
+      name: "",
+      gamemode: "",
+      difficulty: "",
+      description: "",
+      map: { name: "" },
+      numOfPlayer: "",
+      inGameGamemode: "",
+      players: [] as PlayerSteps[],
+    })
+    setNextCheck({
+      playerOne: false,
+      playerTwo: false,
+      playerThree: false,
+      playerFour: false,
+    })
+    setNameCheck(false)
+    setDescriptionCheck(false)
+    closeResetModal()
+  }
+
   const stepsCompleted = checkStepsCompleted(
     MaxPlayerKey,
     parseInt(strat.numOfPlayer)
   )
+
+  console.log(strat)
 
   return (
     <div className="bg-slate-50 min-h-screen -mt-14">
@@ -453,6 +488,19 @@ const createstrategy = () => {
             handleSubmit={handleSubmit}
             strat={strat}
           />
+        )}
+        <ResetStratModal
+          isOpen={resetModal}
+          onClose={closeResetModal}
+          handleSubmit={handleReset}
+        />
+        {(strat.name || strat.gamemode) && (
+          <Button
+            className="fixed bottom-5 right-5 sm:bottom-10 sm:left-20 sm:right-auto pl-10 pr-10"
+            onClick={openResetModal}
+          >
+            Reset
+          </Button>
         )}
       </section>
     </div>

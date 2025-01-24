@@ -1,7 +1,22 @@
+"use client"
+
 import Link from "next/link"
 import MaxWidthWapper from "../components/MaxWidthWapper"
+import Footer from "@/components/homePage/footer"
+import ContactModal from "@/components/homePage/contactModal"
+import { useState } from "react"
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
   return (
     <div className="bg-slate-50">
       <section>
@@ -49,6 +64,8 @@ export default function Home() {
             </div>
           </div>
         </MaxWidthWapper>
+        <ContactModal isOpen={isModalOpen} onClose={closeModal} />
+        <Footer openModal={openModal} />
       </section>
     </div>
   )
