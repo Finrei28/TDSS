@@ -34,8 +34,10 @@ const TopStrategies = () => {
 
   return (
     <div className="flex flex-col justify-center items-center p-10">
-      <h2 className="text-2xl font-bold mb-4">Top 5 Most Liked Strategies</h2>
-      <div className="flex grid-cols-5 justify-center items-center space-x-5">
+      <h2 className="text-2xl font-bold mb-4 text-center">
+        Top 5 Most Liked Strategies
+      </h2>
+      <div className="grid xl:flex grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5 justify-center items-center">
         {strategies?.map((strategy) => (
           <Link
             href={`/${strategy.gamemode.toLowerCase()}/${generateSlug(
