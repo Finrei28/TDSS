@@ -39,7 +39,7 @@ export type StrategyType = {
   numOfPlayer: string
   difficulty: string
   gamemode: string
-  inGameGamemode?: string | null
+  inGameGamemode?: string
   players?: PlayerSteps[]
   createdAt?: Date
   createdBy?: User

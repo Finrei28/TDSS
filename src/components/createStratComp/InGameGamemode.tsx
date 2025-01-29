@@ -24,7 +24,7 @@ const FormSchema = z.object({
 
 type InGameGamemodeProps = {
   setStrat: React.Dispatch<React.SetStateAction<StrategyType>>
-  inGameGamemode: string | undefined | null
+  inGameGamemode: string | undefined
   mode?: string
 }
 
