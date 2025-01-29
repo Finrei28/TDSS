@@ -16,7 +16,7 @@ const AboutContent = ({ images }: AboutContentProps) => {
   const rightImages = images?.filter((image) => image.side === "right")
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] relative w-full flex justify-center overflow-hidden">
+    <div className="min-h-[calc(100vh-3.5rem)] relative w-full flex flex-col items-center justify-center overflow-hidden">
       {/* Central Content */}
       <div className="relative mx-auto md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl p-8 z-10 w-full">
         <h1 className="text-3xl font-bold text-center">About Us</h1>

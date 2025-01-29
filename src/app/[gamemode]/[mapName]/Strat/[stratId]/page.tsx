@@ -173,9 +173,9 @@ const page = () => {
 
   const numberOfPlayers = strategy ? getNumberOfPlayers(strategy) : undefined
   return (
-    <div className="bg-primary">
+    <div className="bg-primary flex flex-col justify-center items-center min-h-[calc(100vh-3.5rem)]">
       {isLoading ? (
-        <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
+        <div className="">
           <Loader />
         </div>
       ) : (
@@ -189,7 +189,7 @@ const page = () => {
             )}
           </div>
           <MaxWidthWapper className="lg:max-w-screen-lg md:max-w-screen-md pt-10">
-            <section className="bg-slate-50 rounded-lg shadow-md p-8 min-h-[calc(100vh-3.5rem)] lg:pr-20 lg:pl-20 mb-5">
+            <section className="bg-slate-50 rounded-lg shadow-md p-8 lg:pr-20 lg:pl-20 mb-5">
               <div className="mb-10">
                 <div className="relative flex justify-center pt-10 pb-10">
                   <ArrowBigLeft
@@ -332,13 +332,16 @@ const page = () => {
                 </div>
               </div>
             </section>
-            <section className="bg-white rounded-lg p-8 shadow-md">
-              <div className="flex flex-col justify-center items-center">
-                <div className="w-full lg:pl-20 lg:pr-20">
-                  <Comments stratId={stratIdStr} />
+            {((strategy && strategy.comments && strategy.comments.length > 0) ||
+              session?.user?.id) && ( //show comment section only if there are comments or if the user is logged in to allow user to comment.
+              <section className="bg-white rounded-lg p-8 shadow-md mb-5">
+                <div className="flex flex-col justify-center items-center">
+                  <div className="w-full lg:pl-20 lg:pr-20">
+                    <Comments stratId={stratIdStr} />
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
           </MaxWidthWapper>
         </>
       )}

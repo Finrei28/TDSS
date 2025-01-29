@@ -24,7 +24,7 @@ export default function Home() {
           <div className="col-span-2 px-6 lg:px-0 lg:pt-4">
             <div className="relative mx-auto text-center flex flex-col justify-center items-center">
               <h1 className="relative w-fit tracking-tight text-balance mt-16 font-bold !leading-tight text-gray-900 text-1xl md:text-2xl lg:text-3xl">
-                Stuck on a TDS map?
+                Stuck on a Tower Defense Simulator map?
               </h1>
               <p className="relative w-fit tracking-tight text-balance mt-1 !leading-tight text-gray-900 text-sm md:text-base lg:text-lg">
                 Browse through TDS strategies to help you win your next game!

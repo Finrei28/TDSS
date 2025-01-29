@@ -82,28 +82,28 @@ const page = () => {
   }
 
   return (
-    <div className="bg-slate-50 min-h-[calc(100vh-3.5rem)]">
-      <section>
-        {isLoading ? (
-          <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
-            <Loader />
-          </div>
-        ) : maps && maps.length > 0 ? (
-          <div>
-            <div className="fixed bottom-4 ml-4 p-4 z-110">
-              {customError && (
-                <ErrorMessage
-                  message={customError}
-                  closeErrorMessage={closeErrorMessage}
-                />
-              )}
-            </div>
-            <div className="relative flex justify-center pt-10 pb-10">
-              <ArrowBigLeft
-                className="hidden sm:block fixed left-10 text-primary fill-white cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 hover:fill-primary"
-                size={"2.5rem"}
-                onClick={goBackHandler}
+    <section className="bg-slate-50">
+      {isLoading ? (
+        <div className="min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center">
+          <Loader />
+        </div>
+      ) : maps && maps.length > 0 ? (
+        <div>
+          <div className="fixed bottom-4 ml-4 p-4 z-110">
+            {customError && (
+              <ErrorMessage
+                message={customError}
+                closeErrorMessage={closeErrorMessage}
               />
+            )}
+          </div>
+          <ArrowBigLeft
+            className="hidden sm:block fixed left-10 text-primary fill-white cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 hover:fill-primary mt-10"
+            size={"2.5rem"}
+            onClick={goBackHandler}
+          />
+          <div className="min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center">
+            <div className="relative flex flex-col items-center justify-center pt-10 pb-10">
               <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
                 Pick a map!
               </h1>
@@ -121,7 +121,7 @@ const page = () => {
                           : gamemodeStr === "special"
                           ? "bg-orange-400"
                           : "bg-purple-600"
-                      } transition-transform duration-300 hover:scale-105`}
+                      } transition-transform duration-300 md:hover:scale-105`}
                     >
                       {map && map.image && (
                         <Image
@@ -140,27 +140,27 @@ const page = () => {
               </div>
             </MaxWidthWapper>
           </div>
-        ) : (
-          <MaxWidthWapper>
-            <div>
-              <div className="fixed bottom-4 ml-14 p-4 z-110">
-                {customError && (
-                  <ErrorMessage
-                    message={customError}
-                    closeErrorMessage={closeErrorMessage}
-                  />
-                )}
-              </div>
-              <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
-                <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
-                  No maps found
-                </h1>
-              </div>
+        </div>
+      ) : (
+        <MaxWidthWapper>
+          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)]">
+            <div className="fixed bottom-4 ml-14 p-4 z-110">
+              {customError && (
+                <ErrorMessage
+                  message={customError}
+                  closeErrorMessage={closeErrorMessage}
+                />
+              )}
             </div>
-          </MaxWidthWapper>
-        )}
-      </section>
-    </div>
+            <div>
+              <h1 className="relative w-fit tracking-tight text-balance font-bold !leading-tight text-gray-900 text-xl md:text-2xl lg:text-3xl">
+                No maps found
+              </h1>
+            </div>
+          </div>
+        </MaxWidthWapper>
+      )}
+    </section>
   )
 }
 
