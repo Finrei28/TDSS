@@ -5,6 +5,7 @@ import MaxWidthWapper from "../components/MaxWidthWapper"
 import Footer from "@/components/homePage/footer"
 import ContactModal from "@/components/homePage/contactModal"
 import { useState } from "react"
+import TopStrategies from "@/components/homePage/TopStrategies"
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -31,7 +32,7 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row mt-20 gap-10">
                 <Link href="/special">
-                  <div className="object-cover transition-transform duration-300 hover:scale-105">
+                  <div className="object-cover duration-300 md:hover:scale-105">
                     <span className="text-orange-400 text-xl">Special</span>
                     <img
                       src="/TDS Special.png"
@@ -41,7 +42,7 @@ export default function Home() {
                   </div>
                 </Link>
                 <Link href="/normal">
-                  <div className="object-cover transition-transform duration-300 hover:scale-105">
+                  <div className="object-cover duration-300 md:hover:scale-105">
                     <span className="text-green-500 text-xl">Normal</span>
                     <img
                       src="/TDS Normal.png"
@@ -51,7 +52,7 @@ export default function Home() {
                   </div>
                 </Link>
                 <Link href="/hardcore">
-                  <div className="object-cover transition-transform duration-300 hover:scale-105">
+                  <div className="object-cover duration-300 md:hover:scale-105">
                     <span className="text-purple-600 text-xl">Hardcore</span>
                     <img
                       src="/TDS Hardcore.png"
@@ -64,9 +65,12 @@ export default function Home() {
             </div>
           </div>
         </MaxWidthWapper>
-        <ContactModal isOpen={isModalOpen} onClose={closeModal} />
-        <Footer openModal={openModal} />
       </section>
+      <section className="bg-slate-200">
+        <TopStrategies />
+      </section>
+      <ContactModal isOpen={isModalOpen} onClose={closeModal} />
+      <Footer openModal={openModal} />
     </div>
   )
 }

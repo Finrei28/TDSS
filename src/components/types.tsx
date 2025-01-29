@@ -33,9 +33,9 @@ export type User = {
 export type StrategyType = {
   id?: number
   name: string
-  map: Map // Allow `map` to be a string or Map type
+  map: Map
   mapId?: number
-  description: string
+  description?: string
   numOfPlayer: string
   difficulty: string
   gamemode: string
