@@ -257,8 +257,6 @@ const createstrategy = () => {
     parseInt(strat.numOfPlayer)
   )
 
-  console.log(strat)
-
   return (
     <div className="bg-slate-50 min-h-screen -mt-14">
       <section>
@@ -464,7 +462,9 @@ const createstrategy = () => {
                 <AccordionContent>
                   <Description
                     setStrat={setStrat}
-                    stratDescription={strat.description}
+                    stratDescription={
+                      strat.description ? strat.description : ""
+                    }
                     setDescriptionCheck={setDescriptionCheck}
                   />
                 </AccordionContent>
