@@ -60,7 +60,9 @@ const page = () => {
               </div>
               {selectedAmount === "custom" && (
                 <input
-                  type="text"
+                  type="tel"
+                  pattern="[0-9]*"
+                  inputMode="numeric"
                   value={inputValue ? `$${inputValue}` : ""}
                   onChange={(e) => {
                     const value =
