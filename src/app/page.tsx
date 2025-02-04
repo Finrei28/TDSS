@@ -4,7 +4,7 @@ import Link from "next/link"
 import MaxWidthWapper from "../components/MaxWidthWapper"
 import Footer from "@/components/homePage/footer"
 import ContactModal from "@/components/homePage/contactModal"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import TopStrategies from "@/components/homePage/TopStrategies"
 
 export default function Home() {
@@ -17,6 +17,10 @@ export default function Home() {
   const closeModal = () => {
     setIsModalOpen(false)
   }
+
+  useEffect(() => {
+    document.title = `TDS Strategies`
+  }, [])
 
   return (
     <div className="bg-slate-50">

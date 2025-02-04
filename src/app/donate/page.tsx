@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useEffect } from "react"
 import MaxWidthWapper from "@/components/MaxWidthWapper"
 import { Button } from "@/components/ui/button"
 import Checkout from "@/components/Donation/Checkout"
@@ -7,11 +7,16 @@ import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 
 const page = () => {
+  useEffect(() => {
+    document.title = `Donate - TDSS`
+  }, [])
+
   const [selectedAmount, setSelectedAmount] = React.useState("custom")
   const [inputValue, setInputValue] = React.useState("")
   const amounts = ["1", "5", "10", "20", "50", "custom"]
   const [checkout, setCheckout] = React.useState(false)
   const [amount, setAmount] = React.useState(0)
+
   if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
     throw new Error("Stripe publishable key is not defined!")
   }

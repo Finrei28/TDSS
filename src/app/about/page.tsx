@@ -5,7 +5,7 @@ import MaxWidthWapper from "@/components/MaxWidthWapper"
 import { Map } from "@/components/types"
 import { useQuery, UseQueryOptions } from "@tanstack/react-query"
 import { useParams } from "next/navigation"
-import React from "react"
+import React, { useEffect } from "react"
 
 type Image = {
   id: string
@@ -14,6 +14,10 @@ type Image = {
 }
 
 const About = () => {
+  useEffect(() => {
+    document.title = `About - TDSS`
+  }, [])
+
   const fetchMaps = async () => {
     const response = await fetch("api/maps")
     if (!response.ok) {
