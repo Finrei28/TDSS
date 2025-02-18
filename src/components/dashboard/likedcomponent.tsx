@@ -9,10 +9,9 @@ import { generateSlug } from "../utils"
 import { ErrorMessageProps } from "../ClientUtils"
 import Loader from "../loader"
 import { ErrorMessage } from "../ui/MessageBox"
+import { useQuery, UseQueryOptions } from "@tanstack/react-query"
 
 const LikedStrategies = () => {
-  const [likedStrategies, setLikedStrategies] = useState<strategyLikes[]>([])
-  const [loading, setLoading] = useState(true)
   const { error, setError, closeErrorMessage } = ErrorMessageProps()
 
   // Function to fetch liked strategies from the API
@@ -26,8 +25,7 @@ const LikedStrategies = () => {
           new Date(b.likedAt).getTime() - new Date(a.likedAt).getTime()
       )
 
-      setLikedStrategies(sortedStrategies)
-      setLoading(false)
+      return sortedStrategies
     } else {
       setError(
         "Could not fetch your liked strategies, please try again later. If this persists please contact the admin."
@@ -35,14 +33,18 @@ const LikedStrategies = () => {
     }
   }
 
-  useEffect(() => {
-    // Fetch updated liked strategies when component mounts
-    fetchLikedStrategies()
-  }, [])
+  const { data: likedStrategies, isLoading } = useQuery<strategyLikes[], Error>(
+    {
+      queryKey: ["likedstrats"],
+      queryFn: () => fetchLikedStrategies(),
+      staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+      cacheTime: 60 * 60 * 1000, // Retain cache for 60 minutes
+    } as UseQueryOptions<strategyLikes[], Error>
+  )
 
   return (
     <div>
-      {loading ? (
+      {isLoading ? (
         <div className="min-h-[calc(100vh-13.5rem)] flex justify-center items-center">
           <Loader />
         </div>
@@ -56,7 +58,7 @@ const LikedStrategies = () => {
               />
             )}
           </div>
-          {likedStrategies?.length > 0 ? (
+          {likedStrategies && likedStrategies?.length > 0 ? (
             <div className="grid gap-6 w-full 2xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 lg:w-4/6 p-4">
               {likedStrategies.map((strategy) => (
                 <div

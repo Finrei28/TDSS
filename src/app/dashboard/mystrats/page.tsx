@@ -12,6 +12,7 @@ import { ErrorMessageProps } from "@/components/ClientUtils"
 import { ErrorMessage } from "@/components/ui/MessageBox"
 import { useSession } from "next-auth/react"
 import Loader from "@/components/loader"
+import { useQuery, UseQueryOptions } from "@tanstack/react-query"
 
 const myStrats = () => {
   useEffect(() => {
@@ -26,24 +27,24 @@ const myStrats = () => {
   }
 
   const { error, setError, closeErrorMessage } = ErrorMessageProps()
-  const [strategies, setStrategies] = useState<StrategyType[] | null>(null)
-  const [loading, setLoading] = useState(true)
 
   // Fetch data for strategies
 
-  useEffect(() => {
-    const getMyStrategies = async () => {
-      try {
-        const response = await fetch("/api/strategy/myStrategies")
-        const result = await response.json()
-        setStrategies(result)
-        setLoading(false)
-      } catch (error) {
-        setError("Could not load your strategies")
-      }
+  const getMyStrategies = async (): Promise<StrategyType[]> => {
+    const response = await fetch("/api/strategy/myStrategies")
+    const result = await response.json()
+    if (!response.ok) {
+      setError("Could not load your strategies")
     }
-    getMyStrategies()
-  }, [])
+    return result
+  }
+
+  const { data: strategies, isLoading } = useQuery<StrategyType[], Error>({
+    queryKey: ["mystrats"],
+    queryFn: () => getMyStrategies(),
+    staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    cacheTime: 60 * 60 * 1000, // Retain cache for 60 minutes
+  } as UseQueryOptions<StrategyType[], Error>)
 
   return (
     <div className="min-h-[calc(100vh-3.5rem)] flex flex-row">
@@ -62,7 +63,7 @@ const myStrats = () => {
             My Strats
           </h2>
 
-          {loading ? (
+          {isLoading ? (
             <div className="min-h-[calc(100vh-13.5rem)] flex justify-center items-center ">
               <Loader />
             </div>
