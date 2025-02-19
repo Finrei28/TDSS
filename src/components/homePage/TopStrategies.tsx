@@ -37,14 +37,14 @@ const TopStrategies = () => {
       <h2 className="text-2xl font-bold mb-4 text-center">
         Top 5 Most Liked Strategies
       </h2>
-      <div className="grid xl:flex grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5 justify-center items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5 p-2 justify-center items-center">
         {strategies?.map((strategy) => (
           <Link
             href={`/${strategy.gamemode.toLowerCase()}/${generateSlug(
               strategy.map?.name
             )}/Strat/${strategy.id}`}
             key={strategy.id}
-            className="relative rounded-lg shadow-lg overflow-hidden bg-slate-50 flex flex-col duration-300 md:hover:scale-105"
+            className="relative rounded-lg shadow-lg overflow-hidden bg-slate-50 flex flex-col h-full duration-300 md:hover:scale-105"
           >
             {strategy.map?.image && (
               <div className="relative w-full h-64">
@@ -58,7 +58,7 @@ const TopStrategies = () => {
                 />
               </div>
             )}
-            <div className="p-6 flex-grow">
+            <div className="p-6 flex-grow flex flex-col justify-between">
               <h3 className="text-2xl font-bold text-gray-700 mb-4">
                 {strategy.name}
               </h3>
@@ -87,7 +87,7 @@ const TopStrategies = () => {
                     })}
                   </p>
                 )}
-                <p>Liked: {strategy._count.strategyLikes}</p>
+                <p>Likes: {strategy._count.strategyLikes}</p>
               </div>
             </div>
           </Link>

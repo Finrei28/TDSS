@@ -39,11 +39,12 @@ const LikedStrategies = () => {
       queryFn: () => fetchLikedStrategies(),
       staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
       cacheTime: 60 * 60 * 1000, // Retain cache for 60 minutes
+      refetchInterval: 30 * 1000, // refetch the data every 30 seconds so new data can be fetched
     } as UseQueryOptions<strategyLikes[], Error>
   )
 
   return (
-    <div>
+    <>
       {isLoading ? (
         <div className="min-h-[calc(100vh-13.5rem)] flex justify-center items-center">
           <Loader />
@@ -59,7 +60,7 @@ const LikedStrategies = () => {
             )}
           </div>
           {likedStrategies && likedStrategies?.length > 0 ? (
-            <div className="grid gap-6 w-full 2xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 lg:w-4/6 p-4">
+            <div className="grid justify-center sm:justify-start gap-6 p-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(300px,0fr))] lg:grid-cols-[repeat(auto-fit,minmax(350px,0fr))]">
               {likedStrategies.map((strategy) => (
                 <div
                   key={strategy.id}
@@ -101,7 +102,13 @@ const LikedStrategies = () => {
                           : 4}
                       </p>
                       <p>Difficulty: {strategy.strategy.difficulty}</p>
-                      <p>Description: {strategy.strategy.description}</p>
+                      <p>
+                        Description:{" "}
+                        {strategy.strategy.description &&
+                        strategy.strategy.description.length > 99
+                          ? strategy.strategy.description?.slice(0, 99) + "..."
+                          : strategy.strategy.description}
+                      </p>
                       {strategy.strategy.createdAt && (
                         <p>
                           Created:{" "}
@@ -150,7 +157,7 @@ const LikedStrategies = () => {
           )}
         </div>
       )}
-    </div>
+    </>
   )
 }
 

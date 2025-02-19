@@ -27,7 +27,7 @@ const likedStrats = async () => {
       <div className="flex flex-1">
         <DashboardSidebar />
         <main className="flex-1 p-5 bg-gray-100 sm:ml-64">
-          <h2 className="text-xl md:text-3xl font-semibold text-gray-700 mb-6">
+          <h2 className="text-xl md:text-3xl font-semibold text-gray-700 mb-6 ml-4">
             Liked Strats
           </h2>
           <LikedStrategies />

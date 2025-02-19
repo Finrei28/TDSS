@@ -44,6 +44,7 @@ const myStrats = () => {
     queryFn: () => getMyStrategies(),
     staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
     cacheTime: 60 * 60 * 1000, // Retain cache for 60 minutes
+    refetchInterval: 30 * 1000, // refetch the data every 30 seconds so new data can be fetched
   } as UseQueryOptions<StrategyType[], Error>)
 
   return (
@@ -59,10 +60,9 @@ const myStrats = () => {
               />
             )}
           </div>
-          <h2 className="text-xl md:text-3xl font-semibold text-gray-700 mb-6">
+          <h2 className="text-xl md:text-3xl font-semibold text-gray-700 mb-6 ml-4">
             My Strats
           </h2>
-
           {isLoading ? (
             <div className="min-h-[calc(100vh-13.5rem)] flex justify-center items-center ">
               <Loader />
@@ -70,7 +70,7 @@ const myStrats = () => {
           ) : (
             <>
               {strategies && strategies.length > 0 ? (
-                <div className="grid justify-center sm:justify-start gap-6 p-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(300px,0fr))] lg:grid-cols-[repeat(auto-fit,minmax(300px,0fr))]">
+                <div className="grid justify-center sm:justify-start gap-6 p-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(300px,0fr))] lg:grid-cols-[repeat(auto-fit,minmax(350px,0fr))]">
                   {strategies.map((strategy) => (
                     <div
                       key={strategy.id}
@@ -109,7 +109,13 @@ const myStrats = () => {
                               : 4}
                           </p>
                           <p>Difficulty: {strategy.difficulty}</p>
-                          <p>Description: {strategy.description}</p>
+                          <p>
+                            Description:{" "}
+                            {strategy.description &&
+                            strategy.description.length > 99
+                              ? strategy.description?.slice(0, 99) + "..."
+                              : strategy.description}
+                          </p>
                           {strategy.createdAt && (
                             <p>
                               Created:{" "}
