@@ -37,3 +37,5 @@ yarn-error.log*
 next-env.d.ts
 
 sendgrid.env
+
+delete.tsx
